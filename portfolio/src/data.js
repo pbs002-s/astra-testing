@@ -2,6 +2,13 @@ export const identity = {
   name: "Pritam Biswas",
   handle: "pbs002-s",
   role: "App & Web Developer · AI Explorer · Competitive Programmer · Full-Stack Engineer",
+  roles: [
+    "App & Web Developer",
+    "AI Explorer",
+    "Competitive Programmer",
+    "Full-Stack Developer",
+    "Software Engineer",
+  ],
   location: "Dhaka, Bangladesh",
   email: "pritam020s2@gmail.com",
   photo: "/photo.jpg",
@@ -21,6 +28,100 @@ export const identity = {
     website: "https://pritam-biswas-portfolio.netlify.app",
   },
 };
+
+export const marqueeWords = [
+  "React",
+  "TypeScript",
+  "Next.js",
+  "Java 17",
+  "Spring Boot",
+  "Python",
+  "PyTorch",
+  "Kotlin",
+  "Jetpack Compose",
+  "PostGIS",
+  "XGBoost",
+  "Gemini",
+  "GPT-4o",
+  "Competitive Programming",
+  "Docker",
+  "FastAPI",
+  "Redis",
+  "PostgreSQL",
+  "Node.js",
+  "Laravel",
+];
+
+export const flatSkills = [
+  {
+    cat: "Core Languages & Tech",
+    cmd: "stack --core",
+    items: [
+      "Python",
+      "JavaScript",
+      "TypeScript",
+      "Java",
+      "PHP",
+      "React",
+      "Node.js",
+      "Express",
+    ],
+  },
+  {
+    cat: "Frameworks & Mobile",
+    cmd: "stack --mobile",
+    items: [
+      "Kotlin",
+      "Jetpack Compose",
+      "Android",
+      "Java 17",
+      "Spring Boot",
+      "Laravel",
+      "Thymeleaf",
+      "Maven",
+      "Tailwind CSS",
+      "HTML/CSS",
+      "C",
+    ],
+  },
+  {
+    cat: "AI & Automation",
+    cmd: "stack --ai",
+    items: [
+      "PyTorch",
+      "From-Scratch LLM",
+      "Autonomous Agent",
+      "AST Indexing",
+      "GPT-4o API",
+      "Gemini API",
+      "Gemini Vision",
+      "Florence-2",
+      "XGBoost",
+      "Grad-CAM",
+      "SHAP",
+      "Groq / Llama 3.3",
+    ],
+  },
+  {
+    cat: "Engineering & Tools",
+    cmd: "stack --tools",
+    items: [
+      "Git / GitHub",
+      "Docker",
+      "FastAPI",
+      "WebSockets",
+      "Socket.IO",
+      "Redis",
+      "PostgreSQL",
+      "CRUD Architecture",
+      "Role-Based Access",
+      "REST APIs",
+      "Room DB",
+      "PostGIS",
+      "Linux",
+    ],
+  },
+];
 
 export const metrics = [
   {
@@ -55,6 +156,8 @@ export const projects = [
     year: "2026",
     stars: 5,
     commits: 24,
+    role: "Solo Creator & AI Systems Architect",
+    reel: "urashree",
     stack: [
       "Python",
       "PyTorch",
@@ -67,6 +170,11 @@ export const projects = [
     github: "https://github.com/pbs002-s/ura-shree-agent",
     details:
       "11.3M-param decoder-only transformer with RoPE, SwiGLU, GQA, and KV-cache. Custom byte-level BPE tokenizer (4096 tokens), AST workspace symbol indexer, persistent virtualenv shell, human-in-the-loop approval sandbox, and Time Machine snapshot rollbacks.",
+    highlights: [
+      "11.3M-param decoder-only transformer: RoPE, SwiGLU, GQA & KV-cache with lossless 4096-token byte-level BPE",
+      "Autonomous agent loop & AST symbol indexing with zero-external-API local execution or multi-provider API seam",
+      "Human-in-the-loop approval sandbox, persistent virtualenv shell, and content-addressed Time Machine workspace snapshots",
+    ],
     category: "AI / AUTONOMOUS SYSTEMS",
     spec: "11.3M PARAMETERS",
     diagram: ["BYTE BPE", "TRANSFORMER", "AGENT"],
@@ -80,6 +188,8 @@ export const projects = [
     year: "2025–2026",
     stars: 1,
     commits: 317,
+    role: "Solo Creator",
+    reel: "opengovtbd",
     stack: [
       "Java 17",
       "Spring Boot 3",
@@ -91,6 +201,11 @@ export const projects = [
     github: "https://github.com/pbs002-s/OpenGovtBD",
     details:
       "Flagship 317-commit civic communications portal. Three role-based portals (Citizen, Officer, Super Admin) managing end-to-end complaint lifecycles, public discussions, official surveys, and transparent government service access.",
+    highlights: [
+      "Three role-based workspaces: Citizen, Officer, and Super Admin with strict audit trails",
+      "Full complaint lifecycle & dynamic timeline tracking with resolution status workflows",
+      "Gamified points, badges, citizen feedback analytics, and official public polling",
+    ],
     category: "CIVIC / FULL-STACK",
     spec: "317 COMMITS · 3 PORTALS",
     diagram: ["CITIZEN", "LIFECYCLE", "OFFICER"],
@@ -104,6 +219,8 @@ export const projects = [
     year: "2026",
     stars: 0,
     commits: 36,
+    role: "Full-Stack Architect",
+    reel: "edusync",
     stack: [
       "React 19",
       "TypeScript",
@@ -117,6 +234,11 @@ export const projects = [
     github: "https://github.com/pbs002-s/EduSync",
     details:
       "Multi-tenant digital university platform uniting 4 role-scoped portals (Student, Teacher, Admin, Authority). Real-time 1-on-1 and study group push messaging over Redis Pub/Sub, automated routine conflict detection, and academic grading queues.",
+    highlights: [
+      "4 role-scoped portals over a unified React 19 shell: Student, Teacher, Super Admin & Authority",
+      "Real-time 1-on-1 & study group push messaging powered by Node.js, Socket.IO and Redis Pub/Sub",
+      "Academic lifecycle engine with automated routine conflict detection, course enrollment & submission grading queues",
+    ],
     category: "DISTRIBUTED / EDUCATION",
     spec: "4 ROLE-SCOPED PORTALS",
     diagram: ["PORTALS", "REDIS BUS", "SERVICES"],
@@ -130,10 +252,17 @@ export const projects = [
     year: "2026",
     stars: 0,
     commits: 36,
+    role: "Solo Creator",
+    reel: "bhoomisheba",
     stack: ["TypeScript", "React", "PostGIS", "Node.js", "Leaflet"],
     github: "https://github.com/pbs002-s/BhoomiSheba",
     details:
       "Next-gen Bangladesh land automation platform using PostGIS spatial GIS queries, e-mutation tracking workflows, multi-source cross-audits, and QR-verified e-Dakhila generation.",
+    highlights: [
+      "PostGIS spatial queries and Cadastral GIS polygon boundary validation",
+      "e-Mutation tracking workflow with cross-department verification checkpoints",
+      "Instant QR-verified e-Dakhila generation with cryptographic hash validation",
+    ],
     category: "GEOSPATIAL / AUTOMATION",
     spec: "SPATIAL GIS · QR DAKHILA",
     diagram: ["LAND DATA", "POSTGIS", "QR VERIFY"],
@@ -147,6 +276,8 @@ export const projects = [
     year: "2026",
     stars: 0,
     commits: 18,
+    role: "Solo Creator",
+    reel: "bhashabot",
     stack: [
       "TypeScript",
       "Next.js 14",
@@ -159,6 +290,11 @@ export const projects = [
     github: "https://github.com/pbs002-s/BhashaBot",
     details:
       "Automated Facebook Messenger support detecting 18 languages (including native Bangla/Banglish) using a single-webhook GPT-4o decision tree for reply generation, sentiment classification, lead extraction, and emergency human handoff.",
+    highlights: [
+      "Multilingual NLP auto-reply across 18 languages including native Bangla and Banglish",
+      "One-webhook, one-decision-point architecture auto-routing refunds & emergencies to human agents",
+      "Full lead extraction, sentiment analysis, and customer intent classification",
+    ],
     category: "AI / CONVERSATIONAL",
     spec: "18 LANGUAGES SUPPORTED",
     diagram: ["WEBHOOK", "DECISION", "HANDOFF"],
@@ -172,6 +308,8 @@ export const projects = [
     year: "2026",
     stars: 4,
     commits: 17,
+    role: "Solo Creator",
+    reel: "diuroutine",
     stack: [
       "Kotlin",
       "Jetpack Compose",
@@ -182,6 +320,11 @@ export const projects = [
     github: "https://github.com/pbs002-s/diu-routine",
     details:
       "Scans PDF/DOCX university schedules via Gemini Vision, auto-extracts timetable metadata, tracks attendance/streaks, and works 100% offline via Room Database.",
+    highlights: [
+      "Gemini Vision OCR extraction parsing complex university timetable layouts",
+      "Room DB local persistence ensuring 100% offline access and fast launch",
+      "Class attendance and streak tracking with automated daily reminders",
+    ],
     category: "NATIVE / OFFLINE-FIRST",
     spec: "100% OFFLINE SCHEDULER",
     diagram: ["DOCUMENT", "VISION", "ROOM DB"],
@@ -195,10 +338,17 @@ export const projects = [
     year: "2026",
     stars: 4,
     commits: 20,
+    role: "Solo Creator",
+    reel: "khoroch",
     stack: ["TypeScript", "React", "IndexedDB", "Tailwind CSS"],
     github: "https://github.com/pbs002-s/khoroch-os",
     details:
       "Zero-latency personal expenditure operating system. Offline-first ledger architecture using client-side IndexedDB, real-time category clustering, and CSV/JSON export.",
+    highlights: [
+      "Zero-latency client-side IndexedDB ledger architecture with instant sync",
+      "Real-time category clustering and spending velocity insights",
+      "Instant CSV & JSON data portability with tactile UI micro-interactions",
+    ],
     category: "SYSTEMS / FINANCE",
     spec: "ZERO-LATENCY OFFLINE OS",
     diagram: ["LEDGER", "CLUSTER", "EXPORT"],
@@ -212,6 +362,8 @@ export const projects = [
     year: "2026",
     stars: 1,
     commits: 4,
+    role: "Solo Creator & Researcher",
+    reel: "signal",
     stack: [
       "Python",
       "PyTorch",
@@ -225,6 +377,11 @@ export const projects = [
     github: "https://github.com/pbs002-s/medicalLLM",
     details:
       "End-to-end clinical neurophysiology platform screening for ALS from raw EMG waveforms. Fuses 1-D deep CNN waveforms with Florence-2 VLM spectrogram plots through an XGBoost meta-learner with 1-D Grad-CAM and Tree SHAP interpretability.",
+    highlights: [
+      "Multi-modal fusion: 1-D deep CNN on raw EMG + Florence-2 VLM on spectrogram plots",
+      "XGBoost meta-learner reconciling waveform and visual signal features",
+      "1-D Grad-CAM anomaly localization and Tree SHAP feature attribution",
+    ],
     category: "RESEARCH / INTERPRETABLE AI",
     spec: "MULTIMODAL EMG AI",
     diagram: ["EMG + VLM", "XGBOOST", "EXPLAIN"],

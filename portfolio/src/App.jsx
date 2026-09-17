@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import Lenis from "lenis";
 import {
   experience,
   honors,
@@ -10,7 +11,12 @@ import {
   skillGroups,
   socials,
 } from "./data";
-import { useReducedMotion, useTheme } from "./hooks";
+import {
+  useReducedMotion,
+  useTheme,
+  useCountUp,
+  useMagnetic,
+} from "./hooks";
 import SceneShell from "./components/SceneShell";
 import ProjectCard from "./components/ProjectCard";
 import Terminal from "./components/Terminal";
@@ -21,15 +27,47 @@ import CustomCursor from "./components/CustomCursor";
 import AmbientBackground from "./components/AmbientBackground";
 import RoleTypewriter from "./components/RoleTypewriter";
 import ProfileCard from "./components/ProfileCard";
+import SkillsMarquee from "./components/SkillsMarquee";
+import HorizontalSkills from "./components/HorizontalSkills";
 
 gsap.registerPlugin(ScrollTrigger);
 
 const navigation = [
   { id: "work", label: "Work" },
+  { id: "skills", label: "Skills" },
   { id: "systems", label: "Systems" },
   { id: "log", label: "Log" },
   { id: "contact", label: "Contact" },
 ];
+
+function MagneticLink({ children, className, href, ...props }) {
+  const ref = useMagnetic(0.35);
+  return (
+    <a ref={ref} className={className} href={href} {...props}>
+      {children}
+    </a>
+  );
+}
+
+function MagneticButton({ children, className, onClick, type = "button", ...props }) {
+  const ref = useMagnetic(0.35);
+  return (
+    <button ref={ref} className={className} onClick={onClick} type={type} {...props}>
+      {children}
+    </button>
+  );
+}
+
+function MetricItem({ metric }) {
+  const { ref, value } = useCountUp(metric.value);
+  return (
+    <div className="metric" ref={ref}>
+      <dt>{metric.label}</dt>
+      <dd>{value}</dd>
+      <span className="mono">{metric.detail}</span>
+    </div>
+  );
+}
 
 function ThemeIcon({ theme }) {
   return theme === "dark" ? (
@@ -54,12 +92,12 @@ function ThemeIcon({ theme }) {
   );
 }
 
-function Header({ theme, toggleTheme, activeSection, isScrolled, scrollProgress }) {
+function Header({ theme, toggleTheme, activeSection, isScrolled, progressBarRef }) {
   return (
     <>
       <div
+        ref={progressBarRef}
         className="scroll-progress-bar"
-        style={{ transform: `scaleX(${scrollProgress})` }}
         aria-hidden="true"
       />
       <header className={`site-header ${isScrolled ? "is-scrolled" : ""}`}>
@@ -95,7 +133,7 @@ function Header({ theme, toggleTheme, activeSection, isScrolled, scrollProgress 
           >
             <ThemeIcon theme={theme} />
           </button>
-          <a
+          <MagneticLink
             className="header-pill-btn header-cv-btn"
             href="/Pritam_Biswas_CV.pdf"
             target="_blank"
@@ -107,8 +145,8 @@ function Header({ theme, toggleTheme, activeSection, isScrolled, scrollProgress 
           >
             <span>CV PDF</span>
             <span aria-hidden="true">↓</span>
-          </a>
-          <a
+          </MagneticLink>
+          <MagneticLink
             className="header-pill-btn header-resume-btn"
             href="/?resume=1"
             target="_blank"
@@ -118,7 +156,7 @@ function Header({ theme, toggleTheme, activeSection, isScrolled, scrollProgress 
           >
             <span>Résumé</span>
             <span aria-hidden="true">↗</span>
-          </a>
+          </MagneticLink>
         </div>
       </header>
     </>
@@ -151,7 +189,8 @@ function Portfolio() {
   const [activeSection, setActiveSection] = useState("");
   const [selectedSkill, setSelectedSkill] = useState("ai");
   const [isReelOpen, setIsReelOpen] = useState(false);
-  const [scrollProgress, setScrollProgress] = useState(0);
+  const progressBarRef = useRef(null);
+  const isScrolledRef = useRef(false);
   const [isScrolled, setIsScrolled] = useState(false);
 
   const activeSkill = skillGroups.find((group) => group.id === selectedSkill);
@@ -213,6 +252,58 @@ function Portfolio() {
     };
   }, [reduced]);
 
+  // Lenis Smooth Scroll Integration
+  useEffect(() => {
+    if (reduced) return;
+
+    const lenis = new Lenis({
+      duration: 0.9,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      smoothWheel: true,
+      wheelMultiplier: 1.0,
+      touchMultiplier: 1.5,
+    });
+
+    const onScroll = () => {
+      ScrollTrigger.update();
+    };
+
+    lenis.on("scroll", onScroll);
+
+    const ticker = (time) => {
+      lenis.raf(time * 1000);
+    };
+
+    gsap.ticker.add(ticker);
+    gsap.ticker.lagSmoothing(500, 33);
+
+    return () => {
+      gsap.ticker.remove(ticker);
+      lenis.destroy();
+    };
+  }, [reduced]);
+
+  // Hero Parallax Scroll
+  useEffect(() => {
+    if (reduced) return;
+
+    const ctx = gsap.context(() => {
+      gsap.to(".hero-visual", {
+        y: 80,
+        ease: "none",
+        scrollTrigger: {
+          trigger: ".hero",
+          start: "top top",
+          end: "bottom top",
+          scrub: true,
+        },
+      });
+    }, root);
+
+    return () => ctx.revert();
+  }, [reduced]);
+
+
   // GSAP Hero Kinetic Stagger Entrance
   useEffect(() => {
     if (reduced) return;
@@ -271,12 +362,19 @@ function Portfolio() {
     const update = () => {
       frame = 0;
 
-      // Global scroll progress
+      // Global scroll progress updated via direct DOM transform (zero re-renders)
       const scrollY = window.scrollY;
       const docHeight = document.documentElement.scrollHeight - window.innerHeight;
       const progress = docHeight > 0 ? Math.min(1, Math.max(0, scrollY / docHeight)) : 0;
-      setScrollProgress(progress);
-      setIsScrolled(scrollY > 45);
+      if (progressBarRef.current) {
+        progressBarRef.current.style.transform = `scaleX(${progress})`;
+      }
+
+      const shouldBeScrolled = scrollY > 45;
+      if (shouldBeScrolled !== isScrolledRef.current) {
+        isScrolledRef.current = shouldBeScrolled;
+        setIsScrolled(shouldBeScrolled);
+      }
 
       if (reduced) return;
 
@@ -348,7 +446,7 @@ function Portfolio() {
         toggleTheme={toggleTheme}
         activeSection={activeSection}
         isScrolled={isScrolled}
-        scrollProgress={scrollProgress}
+        progressBarRef={progressBarRef}
       />
 
       <main id="main" tabIndex={-1}>
@@ -376,53 +474,48 @@ function Portfolio() {
 
           <div className="hero-copy">
             <p className="eyebrow hero-eyebrow">
-              ENGINEERING ARCHITECTURE · 2026
+              ENGINEERING &amp; AI SYSTEMS · 2026
             </p>
 
             <RoleTypewriter />
 
             <h1 id="hero-title">
-              Engineering
+              Pritam Biswas
               <br />
-              Distributed
+              <em>Full-Stack</em> Engineer
               <br />
-              Systems, Local
-              <br />
-              LLMs &amp; <em>Tactile</em>
-              <br />
-              Interfaces<span className="accent">.</span>
+              &amp; <em>AI</em> Explorer<span className="accent">.</span>
             </h1>
 
             <p className="hero-subtitle">
-              I’m Pritam — building ambitious software from{" "}
-              <em>first principles</em> to production.
-              Full-stack engineering, native applications, and AI systems.
-              Independently, end to end.
+              Second-year CSE undergraduate shipping production-grade, distributed,
+              and AI-integrated software solo end-to-end — from building an 11.3M PyTorch transformer
+              and autonomous coding agent to multi-tenant platforms and clinical AI models.
             </p>
 
             <div className="hero-actions flex flex-wrap gap-3">
-              <a
+              <MagneticLink
                 className="button button-primary"
                 href="#work"
                 data-cursor="WORK"
               >
                 Explore selected works <span aria-hidden="true">↘</span>
-              </a>
-              <button
+              </MagneticLink>
+              <MagneticButton
                 type="button"
                 className="button button-secondary flex items-center gap-2"
                 onClick={() => setIsReelOpen(true)}
                 data-cursor="PLAY"
               >
                 <span className="accent" aria-hidden="true">▷</span> Watch showreel
-              </button>
-              <a
+              </MagneticButton>
+              <MagneticLink
                 className="button button-secondary"
                 href="#contact"
                 data-cursor="SHELL"
               >
                 Inspect terminal / code <span aria-hidden="true">⌘</span>
-              </a>
+              </MagneticLink>
             </div>
           </div>
 
@@ -464,17 +557,15 @@ function Portfolio() {
         <div className="metrics-section container">
           <dl className="metrics-grid">
             {metrics.map((metric) => (
-              <div className="metric" key={metric.label}>
-                <dt>{metric.label}</dt>
-                <dd>{metric.value}</dd>
-                <span className="mono">{metric.detail}</span>
-              </div>
+              <MetricItem key={metric.label} metric={metric} />
             ))}
           </dl>
           <p className="metrics-note mono">
             PORTFOLIO METRICS / VERIFIED REPOSITORY &amp; COMPETITIVE SNAPSHOT
           </p>
         </div>
+
+        <SkillsMarquee />
 
         <section
           id="work"
@@ -530,6 +621,8 @@ function Portfolio() {
           </div>
         </section>
 
+        <HorizontalSkills />
+
         <section
           id="systems"
           className="section systems-section"
@@ -538,8 +631,8 @@ function Portfolio() {
           <div className="container">
             <div id="systems-title">
               <SectionHeading
-                index="02"
-                eyebrow="CAPABILITY MATRIX"
+                index="03"
+                eyebrow="CAPABILITY MATRIX &amp; 3D TOPOLOGY"
                 title="Four domains."
                 accent="One unified mindset."
               >
@@ -631,7 +724,7 @@ function Portfolio() {
         >
           <div id="log-title">
             <SectionHeading
-              index="03"
+              index="04"
               eyebrow="ENGINEERING LOG &amp; PROFILE"
               title="Always building."
               accent="Always learning."
@@ -711,7 +804,7 @@ function Portfolio() {
           <div className="container">
             <div className="contact-layout">
               <div className="contact-copy reveal">
-                <p className="eyebrow">04 / OPEN A CONNECTION</p>
+                <p className="eyebrow">05 / OPEN A CONNECTION</p>
                 <h2 id="contact-title">
                   A difficult problem?
                   <br />
