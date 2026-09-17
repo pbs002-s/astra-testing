@@ -1,13 +1,11 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import gsap from "gsap";
 
 export default function CustomCursor() {
+  const containerRef = useRef(null);
   const cursorDotRef = useRef(null);
   const cursorRingRef = useRef(null);
-  const [cursorText, setCursorText] = useState("");
-  const [isHovered, setIsHovered] = useState(false);
-  const [isClicking, setIsClicking] = useState(false);
-  const [isVisible, setIsVisible] = useState(false);
+  const labelRef = useRef(null);
 
   useEffect(() => {
     // Only enable on pointer devices that support hover
@@ -16,48 +14,68 @@ export default function CustomCursor() {
 
     if (!finePointer || reducedMotion) return;
 
+    const container = containerRef.current;
     const dot = cursorDotRef.current;
     const ring = cursorRingRef.current;
-    if (!dot || !ring) return;
+    const label = labelRef.current;
+    if (!container || !dot || !ring || !label) return;
 
-    // Use GSAP quickTo for 120fps hardware-accelerated fluid follow
+    // GSAP quickTo for 120fps hardware-accelerated follow
     const setDotX = gsap.quickTo(dot, "x", { duration: 0.08, ease: "power3.out" });
     const setDotY = gsap.quickTo(dot, "y", { duration: 0.08, ease: "power3.out" });
 
-    const setRingX = gsap.quickTo(ring, "x", { duration: 0.22, ease: "power3.out" });
-    const setRingY = gsap.quickTo(ring, "y", { duration: 0.22, ease: "power3.out" });
+    const setRingX = gsap.quickTo(ring, "x", { duration: 0.18, ease: "power3.out" });
+    const setRingY = gsap.quickTo(ring, "y", { duration: 0.18, ease: "power3.out" });
+
+    let isVisible = false;
 
     const onPointerMove = (e) => {
-      if (!isVisible) setIsVisible(true);
+      if (!isVisible) {
+        isVisible = true;
+        container.classList.add("is-visible");
+      }
       setDotX(e.clientX);
       setDotY(e.clientY);
       setRingX(e.clientX);
       setRingY(e.clientY);
     };
 
-    const onMouseDown = () => setIsClicking(true);
-    const onMouseUp = () => setIsClicking(false);
-    const onMouseLeave = () => setIsVisible(false);
-    const onMouseEnter = () => setIsVisible(true);
+    const onMouseDown = () => container.classList.add("is-clicking");
+    const onMouseUp = () => container.classList.remove("is-clicking");
+    const onMouseLeave = () => {
+      isVisible = false;
+      container.classList.remove("is-visible");
+    };
+    const onMouseEnter = () => {
+      isVisible = true;
+      container.classList.add("is-visible");
+    };
 
-    // Dynamic hover listeners for links, buttons, cards
+    // Fast delegation for interactive elements without React re-renders
     const onMouseOver = (e) => {
       const target = e.target;
-      const interactive = target.closest("a, button, [role='button'], .project-card, .telemetry-repo-card, .skill-trigger, .profile-card, canvas");
+      if (!target || typeof target.closest !== "function") return;
+
+      const interactive = target.closest(
+        "a, button, [role='button'], .project-card, .telemetry-repo-card, .skill-trigger, .profile-card, canvas"
+      );
 
       if (interactive) {
-        setIsHovered(true);
-        const label = interactive.getAttribute("data-cursor");
-        if (label) {
-          setCursorText(label);
+        container.classList.add("is-hovered");
+        const customText = interactive.getAttribute("data-cursor");
+        if (customText) {
+          label.textContent = customText;
+          container.classList.add("has-text");
         } else if (interactive.tagName === "A" && interactive.getAttribute("target") === "_blank") {
-          setCursorText("↗");
+          label.textContent = "↗";
+          container.classList.add("has-text");
         } else {
-          setCursorText("");
+          label.textContent = "";
+          container.classList.remove("has-text");
         }
       } else {
-        setIsHovered(false);
-        setCursorText("");
+        container.classList.remove("is-hovered", "has-text");
+        label.textContent = "";
       }
     };
 
@@ -76,18 +94,17 @@ export default function CustomCursor() {
       document.removeEventListener("mouseenter", onMouseEnter);
       document.removeEventListener("mouseover", onMouseOver);
     };
-  }, [isVisible]);
+  }, []);
 
   return (
     <div
-      className={`custom-cursor-container ${isVisible ? "is-visible" : ""} ${
-        isHovered ? "is-hovered" : ""
-      } ${isClicking ? "is-clicking" : ""} ${cursorText ? "has-text" : ""}`}
+      ref={containerRef}
+      className="custom-cursor-container"
       aria-hidden="true"
     >
       <div ref={cursorDotRef} className="cursor-dot" />
       <div ref={cursorRingRef} className="cursor-ring">
-        {cursorText && <span className="cursor-label mono">{cursorText}</span>}
+        <span ref={labelRef} className="cursor-label mono" />
       </div>
     </div>
   );

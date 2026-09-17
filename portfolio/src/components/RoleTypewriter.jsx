@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
+import { identity } from "../data";
 
 const ROLES = [
   "Full-Stack Engineer",
+  "App & Web Developer",
   "AI Systems & Transformer Explorer",
   "Autonomous Agent Builder",
-  "Competitive Programmer · LeetCode & Codeforces",
+  "Competitive Programmer (LeetCode & Codeforces)",
   "Distributed Architecture Specialist",
 ];
 

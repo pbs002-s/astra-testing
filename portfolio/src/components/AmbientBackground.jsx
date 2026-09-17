@@ -19,19 +19,31 @@ export default function AmbientBackground() {
     const setHalo2X = gsap.quickTo(halo2, "x", { duration: 2.6, ease: "power2.out" });
     const setHalo2Y = gsap.quickTo(halo2, "y", { duration: 2.6, ease: "power2.out" });
 
+    let rafId = null;
+    let targetX = 0;
+    let targetY = 0;
+
     const handlePointerMove = (e) => {
       const { innerWidth, innerHeight } = window;
-      const nx = (e.clientX / innerWidth - 0.5) * 120;
-      const ny = (e.clientY / innerHeight - 0.5) * 120;
+      targetX = (e.clientX / innerWidth - 0.5) * 120;
+      targetY = (e.clientY / innerHeight - 0.5) * 120;
 
-      setHalo1X(nx);
-      setHalo1Y(ny);
-      setHalo2X(-nx * 0.8);
-      setHalo2Y(-ny * 0.8);
+      if (!rafId) {
+        rafId = requestAnimationFrame(() => {
+          setHalo1X(targetX);
+          setHalo1Y(targetY);
+          setHalo2X(-targetX * 0.8);
+          setHalo2Y(-targetY * 0.8);
+          rafId = null;
+        });
+      }
     };
 
     window.addEventListener("pointermove", handlePointerMove, { passive: true });
-    return () => window.removeEventListener("pointermove", handlePointerMove);
+    return () => {
+      if (rafId) cancelAnimationFrame(rafId);
+      window.removeEventListener("pointermove", handlePointerMove);
+    };
   }, []);
 
   return (

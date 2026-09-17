@@ -325,7 +325,7 @@ export default function Scene({
   onContextLost,
 }) {
   const [dpr, setDpr] = useState(() =>
-    Math.min(window.devicePixelRatio || 1, 2),
+    Math.min(window.devicePixelRatio || 1, 1.5),
   );
 
   return (
