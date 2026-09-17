@@ -92,3 +92,6 @@ export function useVisibility(ref) {
 
   return { near, active: visible && pageVisible };
 }
+
+export { useCountUp } from "./hooks/useCountUp";
+export { useMagnetic } from "./hooks/useMagnetic";
