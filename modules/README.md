@@ -1,7 +1,7 @@
 # 🇧🇩 Integrated Digital Healthcare Platform for Bangladesh (BD-HealthLoop)
 ## Complete Module Architecture & Specifications
 
-Welcome to the comprehensive technical documentation for the **8 Core Healthcare Modules** designed specifically to solve Bangladesh's critical healthcare challenges.
+Welcome to the comprehensive technical documentation for the **9 Core Healthcare Modules** designed specifically to solve Bangladesh's critical healthcare challenges.
 
 ---
 
@@ -22,14 +22,15 @@ flowchart TD
 
     subgraph CLINICAL["🏥 Primary & Outpatient Care"]
         M01["[01. Hospital Appointment](./01-appointment/README.md)<br/>QR Scan & Share • Smart Token • Queue Display"]
-        M03["[03. Prescription / Prodona](./03-prescription/README.md)<br/>Digital Rx • DGDA Registry • AWaRe Stewardship"]
+        M03["[03. Prescription (Rx)](./03-prescription/README.md)<br/>Digital Rx • DGDA Registry • AWaRe Stewardship"]
         M02["[02. Diagnostic Test Reports](./02-test-reports/README.md)<br/>OpenELIS Ingest • Bangla SMS Notification • Critical Alerts"]
     end
 
-    subgraph CRITICAL["🚨 Critical Care & Supply Chain"]
+    subgraph CRITICAL["🚨 Critical Care, Supply Chain & Lifeline"]
         M04["[04. ICU Bed Availability](./04-icu-beds/README.md)<br/>Real-time ICU/CCU • Anti-Gaming • Ambulance Pre-Alert"]
         M06["[06. Medicine Availability](./06-medicine-stock/README.md)<br/>Stock Search • Generic Equivalents • eLMIS Link"]
-        M08["[08. Blood Bank / Prodona](./08-blood-bank/README.md)<br/>Hospital Stock • Rare Types • Donor Lifeline"]
+        M08["[08. Blood Bank](./08-blood-bank/README.md)<br/>Hospital Stock • Rare Types • Donor Lifeline"]
+        M09["[09. Prodona (Aid & Life)](./09-prodona/README.md)<br/>Medical Crowdfunding • Organ Pledge • Equipment Aid"]
     end
 
     M07 ==> M05
@@ -39,6 +40,7 @@ flowchart TD
     M05 --> M04
     M05 --> M06
     M05 --> M08
+    M05 --> M09
 
     style SPINE fill:#d4edda,stroke:#28a745,stroke-width:3px
     style CLINICAL fill:#eef6ff,stroke:#3b82f6,stroke-width:2px
@@ -47,7 +49,7 @@ flowchart TD
 
 ---
 
-## 📊 Summary of the 8 Modules
+## 📊 Summary of the 9 Modules
 
 | # | Module Folder | Key Problem in Bangladesh | Proposed Digital Solution | Core FHIR Resources | Status |
 |---|---|---|---|---|---|
@@ -59,6 +61,7 @@ flowchart TD
 | **06** | [`06-medicine-stock`](./06-medicine-stock/) | 22% essential drug availability in public clinics; 84% patients return empty-handed; price hikes | Geolocation medicine finder; generic substitute advisor; public facility stock transparency; eLMIS bridge | `InventoryReport`, `MedicationKnowledge` | Full Docs |
 | **07** | [`07-health-card`](./07-health-card/) | 5 pilot districts lack training & infrastructure; no unified patient identifier in active service | Unique 9-digit Health ID; durable QR card + offline PWA; proxy family access; emergency break-glass | `Patient`, `Consent`, `Person`, `RelatedPerson` | Full Docs |
 | **08** | [`08-blood-bank`](./08-blood-bank/) | 1M+ bags needed/year, only ~30% voluntary; donor apps exist but hospital stock visibility is zero | Live hospital blood unit inventory (A/B/AB/O +/-); rare blood network (Bombay phenotype); FIFO expiry | Custom Blood Inventory + `SupplyDelivery` | Full Docs |
+| **09** | [`09-prodona`](./09-prodona/) | 79.31% OOP spending driving millions into poverty; fake social media medical campaigns; severe cadaveric organ deficit | 100% verified medical crowdfunding with direct hospital billing; national organ & corneal donation pledge registry; circular medical equipment aid | `CoverageEligibilityRequest`, `Claim`, `Consent`, `Task` | Full Docs |
 
 ---
 
@@ -75,6 +78,7 @@ sequenceDiagram
     participant LAB as 🧪 02-Test Reports
     participant MED as 🏪 06-Medicine Stock
     participant ICU as 🚨 04-ICU Beds / 08-Blood
+    participant PRO as 🤝 09-Prodona (Lifeline)
 
     P->>OPD: Scan Health Card QR at counter / kiosk
     OPD->>HC: Validate Health ID & retrieve demographics
@@ -97,10 +101,12 @@ sequenceDiagram
         LAB-->>DOC: Critical Alert (if life-threatening value)
     end
 
-    opt Emergency Escalation
+    opt Emergency Escalation & Financial Aid
         DOC->>ICU: Patient critical: check ICU bed availability
         ICU-->>DOC: Confirmed Bed #4 at District Hospital
         DOC->>ICU: Pre-alert incoming ambulance & reserve O- Blood
+        DOC->>PRO: Patient impoverished (79.31% OOP): trigger verified Prodona aid
+        PRO-->>P: Escrow crowdfunding & Zakat support settles hospital bill directly
     end
 ```
 
@@ -130,6 +136,7 @@ graph LR
         ICU_SRV["04. Bed & Emergency (WebSocket)"]
         MED_SRV["06. Stock & Geo Service"]
         BLD_SRV["08. Blood Inventory Service"]
+        PRO_SRV["09. Prodona Aid & Lifeline Service"]
     end
 
     subgraph Data["💾 Persistence & National Links"]
@@ -198,4 +205,8 @@ Explore the detailed specifications inside each module folder:
    - [FEATURES.md](./08-blood-bank/FEATURES.md)
    - [IMPLEMENTATION.md](./08-blood-bank/IMPLEMENTATION.md)
 
-
+9. [**09-prodona/**](./09-prodona/)
+   - [README.md](./09-prodona/README.md)
+   - [APP_FLOW.md](./09-prodona/APP_FLOW.md)
+   - [FEATURES.md](./09-prodona/FEATURES.md)
+   - [IMPLEMENTATION.md](./09-prodona/IMPLEMENTATION.md)
