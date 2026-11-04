@@ -1,0 +1,1519 @@
+const fs = require('fs');
+const path = require('path');
+const { execSync } = require('child_process');
+
+console.log("Generating Perfectly Formatted 13-Page CareLoop Project Proposal...");
+
+const htmlContent = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>CareLoop: National Digital Health Project Proposal (BD-HealthLoop)</title>
+  <style>
+    @page {
+      size: A4 portrait;
+      margin: 14mm 13mm 14mm 13mm;
+    }
+
+    *, *:before, *:after {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif;
+      font-size: 9pt;
+      line-height: 1.45;
+      color: #1e293b;
+      background: #ffffff;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* Page container */
+    .doc-page {
+      page-break-after: always;
+      break-after: page;
+      height: 269mm; /* Fits standard A4 printable area (297mm - 28mm) */
+      max-height: 269mm;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+    }
+
+    .doc-page:last-child {
+      page-break-after: avoid;
+      break-after: avoid;
+    }
+
+    .content-area {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Running Document Header */
+    .running-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1.5px solid #0d9488;
+      padding-bottom: 4px;
+      margin-bottom: 10px;
+      font-size: 7.5pt;
+      color: #64748b;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .running-header .tag {
+      background: #e0f2fe;
+      color: #0369a1;
+      padding: 1px 6px;
+      border-radius: 3px;
+      font-weight: 700;
+      font-size: 7pt;
+    }
+
+    .running-footer {
+      border-top: 1px solid #e2e8f0;
+      padding-top: 4px;
+      margin-top: 6px;
+      display: flex;
+      justify-content: space-between;
+      font-size: 7pt;
+      color: #94a3b8;
+    }
+
+    /* Typography */
+    h1, h2, h3, h4 {
+      color: #0f2942;
+      font-weight: 700;
+      margin-top: 0;
+      line-height: 1.25;
+    }
+
+    h1 {
+      font-size: 18pt;
+      margin-bottom: 8px;
+    }
+
+    h2 {
+      font-size: 12.5pt;
+      margin-top: 2px;
+      margin-bottom: 8px;
+      padding-bottom: 3px;
+      border-bottom: 1.5px solid #0f2942;
+      display: flex;
+      align-items: center;
+    }
+
+    h2 .sec-num {
+      background: #0f2942;
+      color: #ffffff;
+      padding: 1px 7px;
+      border-radius: 3px;
+      font-size: 9.5pt;
+      margin-right: 7px;
+      font-weight: bold;
+    }
+
+    h3 {
+      font-size: 10pt;
+      margin-top: 8px;
+      margin-bottom: 4px;
+      color: #0d9488;
+    }
+
+    h4 {
+      font-size: 9pt;
+      margin-top: 6px;
+      margin-bottom: 3px;
+      color: #334155;
+    }
+
+    p {
+      margin: 0 0 6px 0;
+      text-align: justify;
+    }
+
+    ul, ol {
+      margin: 0 0 8px 0;
+      padding-left: 18px;
+    }
+
+    li {
+      margin-bottom: 2px;
+    }
+
+    strong {
+      color: #0f172a;
+    }
+
+    /* Cover Page Styles */
+    .cover-container {
+      border: 2.5px solid #0f2942;
+      border-radius: 8px;
+      padding: 24px 22px;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+      box-sizing: border-box;
+    }
+
+    .cover-top {
+      text-align: center;
+    }
+
+    .gov-badge {
+      display: inline-block;
+      background: #0f2942;
+      color: #ffffff;
+      padding: 5px 16px;
+      border-radius: 20px;
+      font-size: 8pt;
+      font-weight: 600;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+
+    .cover-title {
+      font-size: 26pt;
+      font-weight: 800;
+      color: #0f2942;
+      margin-bottom: 4px;
+      letter-spacing: -0.5px;
+    }
+
+    .cover-subtitle {
+      font-size: 12.5pt;
+      color: #0d9488;
+      font-weight: 600;
+      margin-bottom: 10px;
+      line-height: 1.35;
+    }
+
+    .cover-tagline {
+      font-size: 9.5pt;
+      color: #475569;
+      font-style: italic;
+      max-width: 90%;
+      margin: 0 auto 14px auto;
+      line-height: 1.4;
+    }
+
+    .badge-bar {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .badge-item {
+      background: #f1f5f9;
+      border: 1px solid #cbd5e1;
+      padding: 4px 10px;
+      border-radius: 5px;
+      font-size: 7.5pt;
+      font-weight: 600;
+      color: #334155;
+    }
+
+    .cover-meta-grid {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      padding: 12px 16px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      font-size: 8pt;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    }
+
+    .meta-field {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .meta-label {
+      font-size: 7pt;
+      text-transform: uppercase;
+      color: #64748b;
+      font-weight: 600;
+      margin-bottom: 1px;
+    }
+
+    .meta-val {
+      font-weight: 600;
+      color: #0f2942;
+    }
+
+    .cover-notice {
+      text-align: center;
+      font-size: 7pt;
+      color: #64748b;
+      line-height: 1.3;
+      border-top: 1px solid #e2e8f0;
+      padding-top: 8px;
+    }
+
+    /* Metric Cards Grid */
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 7px;
+      margin: 8px 0 10px 0;
+    }
+
+    .metric-card {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-top: 3px solid #0d9488;
+      border-radius: 4px;
+      padding: 6px 8px;
+      text-align: center;
+    }
+
+    .metric-val {
+      font-size: 14pt;
+      font-weight: 800;
+      color: #0f2942;
+      line-height: 1.1;
+      margin-bottom: 2px;
+    }
+
+    .metric-label {
+      font-size: 7pt;
+      color: #64748b;
+      font-weight: 600;
+      text-transform: uppercase;
+      line-height: 1.2;
+    }
+
+    /* Tables */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 6px 0 10px 0;
+      font-size: 8pt;
+    }
+
+    th, td {
+      border: 1px solid #cbd5e1;
+      padding: 4px 6px;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      background: #0f2942;
+      color: #ffffff;
+      font-weight: 600;
+      font-size: 7.5pt;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    tr:nth-child(even) td {
+      background: #f8fafc;
+    }
+
+    /* Callout Boxes */
+    .callout {
+      border-left: 3px solid #0d9488;
+      background: #f0fdfa;
+      padding: 6px 10px;
+      border-radius: 0 4px 4px 0;
+      margin: 6px 0 8px 0;
+      font-size: 8pt;
+    }
+
+    .callout-amber {
+      border-left-color: #d97706;
+      background: #fffbeb;
+    }
+
+    .callout-navy {
+      border-left-color: #0f2942;
+      background: #f1f5f9;
+    }
+
+    .callout-title {
+      font-weight: 700;
+      color: #0f2942;
+      margin-bottom: 2px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* Architecture diagram boxes */
+    .arch-diagram {
+      border: 1px solid #cbd5e1;
+      border-radius: 5px;
+      background: #f8fafc;
+      padding: 8px;
+      margin: 6px 0 8px 0;
+    }
+
+    .arch-tier {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-left: 3.5px solid #0f2942;
+      border-radius: 3px;
+      padding: 5px 7px;
+      margin-bottom: 5px;
+    }
+
+    .arch-tier-title {
+      font-size: 7.5pt;
+      font-weight: 700;
+      color: #0f2942;
+      text-transform: uppercase;
+      margin-bottom: 3px;
+    }
+
+    .arch-modules-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 4px;
+    }
+
+    .arch-module-pill {
+      background: #f1f5f9;
+      border: 1px solid #cbd5e1;
+      border-radius: 3px;
+      padding: 3px 5px;
+      font-size: 6.8pt;
+      font-weight: 600;
+      color: #334155;
+      text-align: center;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .arch-module-pill.highlight {
+      background: #e0f2fe;
+      border-color: #38bdf8;
+      color: #0369a1;
+    }
+
+    /* Flow Steps */
+    .flow-steps {
+      display: flex;
+      gap: 5px;
+      margin: 6px 0 8px 0;
+    }
+
+    .flow-step-box {
+      flex: 1;
+      background: #f8fafc;
+      border: 1px solid #cbd5e1;
+      border-radius: 4px;
+      padding: 5px 7px;
+    }
+
+    .flow-step-header {
+      font-size: 7pt;
+      font-weight: 700;
+      color: #0d9488;
+      text-transform: uppercase;
+      margin-bottom: 2px;
+    }
+
+    .flow-step-body {
+      font-size: 7pt;
+      color: #334155;
+      line-height: 1.3;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ==================== PAGE 1: COVER PAGE ==================== -->
+  <div class="doc-page">
+    <div class="cover-container">
+      <div class="cover-top">
+        <div class="gov-badge">Government of Bangladesh · Directorate General of Health Services (DGHS) · WHO Bangladesh</div>
+        <div class="cover-title">CareLoop</div>
+        <div class="cover-subtitle">National Digital Health Interoperability & Continuum of Care Ecosystem (BD-HealthLoop)</div>
+        <div class="cover-tagline">
+          "One Citizen, One Health Identity, One Complete Continuum of Care: Activating the National e-Health Card into an Intelligent Clinical Instrument from Day One."
+        </div>
+
+        <div class="badge-bar">
+          <div class="badge-item">🏛️ MoHFW & WHO Hackathon 2026</div>
+          <div class="badge-item">🇧🇩 Smart Bangladesh 2041</div>
+          <div class="badge-item">⚙️ BD Core FHIR R4 Native</div>
+          <div class="badge-item">🪪 e-Health Card 2028 Pilot Ready</div>
+        </div>
+      </div>
+
+      <div class="metrics-grid">
+        <div class="metric-card">
+          <div class="metric-val">79.31%</div>
+          <div class="metric-label">Out-of-Pocket Crisis</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-val">48 Sec</div>
+          <div class="metric-label">Primary OPD Consultation</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-val">6 Districts</div>
+          <div class="metric-label">DGHS Mandated Pilot Target</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-val">16 Modules</div>
+          <div class="metric-label">Integrated Platform Scope</div>
+        </div>
+      </div>
+
+      <div class="cover-meta-grid">
+        <div class="meta-field">
+          <span class="meta-label">Document Identification</span>
+          <span class="meta-val">CL-BD-PROP-2026-V1.0</span>
+        </div>
+        <div class="meta-field">
+          <span class="meta-label">Submission Target</span>
+          <span class="meta-val">DGHS Technical Committee & WHO Innovation Panel</span>
+        </div>
+        <div class="meta-field">
+          <span class="meta-label">Prepared By</span>
+          <span class="meta-val">CareLoop Systems Architecture Consortium</span>
+        </div>
+        <div class="meta-field">
+          <span class="meta-label">Target Pilot Districts</span>
+          <span class="meta-val">Bogura, Jhalokathi, Khulna, Narsingdi, Noakhali, Sirajganj</span>
+        </div>
+        <div class="meta-field">
+          <span class="meta-label">Architecture Classification</span>
+          <span class="meta-val">Tier-4 Sovereign Healthcare Infrastructure</span>
+        </div>
+        <div class="meta-field">
+          <span class="meta-label">Release Date</span>
+          <span class="meta-val">November 2026</span>
+        </div>
+      </div>
+
+      <div class="cover-notice">
+        <strong>Confidentiality & Regulatory Notice:</strong> Prepared exclusively for evaluation under the National E-Health Innovation Framework, Directorate General of Health Services (DGHS), Ministry of Health and Family Welfare (MoHFW), and partner international development agencies. Designed for strict compliance with the Bangladesh Cyber Security Act 2023 and DGHS Health Data Privacy Guidelines.
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== PAGE 2: TOC & EXEC SUMMARY ==================== -->
+  <div class="doc-page">
+    <div class="running-header">
+      <span>CareLoop: National Project Proposal</span>
+      <span class="tag">Page 2 · Executive Brief</span>
+    </div>
+
+    <div class="content-area">
+      <h2><span class="sec-num">01</span> Table of Contents</h2>
+      <table style="margin-bottom: 8px;">
+        <thead>
+          <tr>
+            <th style="width: 15%;">Section</th>
+            <th style="width: 65%;">Chapter Title</th>
+            <th style="width: 20%; text-align: center;">Strategic Focus</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>Section 02</strong></td><td>Executive Summary & The National Mandate</td><td style="text-align: center;">Vision & Core Thesis</td></tr>
+          <tr><td><strong>Section 03</strong></td><td>Problem Analysis: Bangladesh Healthcare Trilemma (Empirical Data)</td><td style="text-align: center;">7 Broken Loops</td></tr>
+          <tr><td><strong>Section 04</strong></td><td>Strategic Alignment: Smart Bangladesh 2041, DGHS 2028 & WHO AWaRe</td><td style="text-align: center;">6 Pilot Districts</td></tr>
+          <tr><td><strong>Section 05</strong></td><td>Platform Architecture & The 16 Core Modules (5 Functional Tiers)</td><td style="text-align: center;">Clinical Spine</td></tr>
+          <tr><td><strong>Section 06</strong></td><td>Breakthrough Technical Innovations (Offline PWA, Signed QR, AMR Alert)</td><td style="text-align: center;">Field Resilience</td></tr>
+          <tr><td><strong>Section 07</strong></td><td>The 3-Minute Live Hackathon Proof-of-Concept (POC) Blueprint</td><td style="text-align: center;">DGHS Sandbox Live</td></tr>
+          <tr><td><strong>Section 08</strong></td><td>Security, Data Privacy & Regulatory Governance (Cyber Security Act 2023)</td><td style="text-align: center;">Sovereignty & Consent</td></tr>
+          <tr><td><strong>Section 09</strong></td><td>Phased Implementation & 24-Month Rollout Roadmap (6 Pilot Districts)</td><td style="text-align: center;">Agile Deployment</td></tr>
+          <tr><td><strong>Section 10</strong></td><td>Financial Viability, Budget Estimates & Commercial Sustainability</td><td style="text-align: center;">Self-Sustaining PPP</td></tr>
+          <tr><td><strong>Section 11</strong></td><td>Risk Management Matrix & Contingency Protocols</td><td style="text-align: center;">Threat Mitigation</td></tr>
+          <tr><td><strong>Section 12</strong></td><td>Monitoring, Key Performance Indicators (KPIs) & Conclusion</td><td style="text-align: center;">Impact Metrics</td></tr>
+        </tbody>
+      </table>
+
+      <h2><span class="sec-num">02</span> Executive Summary & The National Mandate</h2>
+      <p>
+        The healthcare system of Bangladesh serves 170+ million citizens across a three-tiered delivery pyramid: primary Community Clinics and Upazila Health Complexes (UHCs), secondary District Sadar Hospitals, and apex tertiary medical college hospitals. While Bangladesh has achieved historic milestones in reducing maternal and child mortality, the healthcare apparatus remains crippled by <strong>fragmentation, catastrophic out-of-pocket costs, and severe systemic leakages</strong>.
+      </p>
+      <p>
+        Under the <em>Digital Health Strategy 2023–2028</em>, the Ministry of Health and Family Welfare (MoHFW) has initiated the National Health ID (HID) and the distribution of physical <strong>e-Health Cards</strong> across six designated pilot districts. However, a profound implementation vacuum threatens this initiative: <strong>the physical cards arrive at rural clinics, but front-line healthcare workers possess no software to read, record, or act upon them</strong>. The cards remain inert plastic.
+      </p>
+
+      <div class="callout">
+        <div class="callout-title">💡 The Core Thesis of CareLoop (BD-HealthLoop)</div>
+        CareLoop delivers the definitive, interoperable clinical operating system designed to activate the National Health Card from Day One. It connects rural ticket counters, busy government physicians, diagnostic laboratories, and pharmacies into one unbroken, automated care loop. By building natively on <strong>BD Core HL7 FHIR R4</strong> and engineering for extreme rural constraints (8-hour load-shedding and 26% smartphone access), CareLoop bridges policy and the frontline clinic.
+      </div>
+
+      <h3>Core Strategic Deliverables</h3>
+      <ul>
+        <li><strong>Sub-Minute OPD Triage:</strong> Accelerate rural outpatient check-in from 15 minutes of manual logging to a 5-second QR scan and automated token generation.</li>
+        <li><strong>Antimicrobial Stewardship:</strong> Embed real-time WHO AWaRe classification guidance inside the prescription workflow to arrest dangerous antibiotic resistance.</li>
+        <li><strong>Universal Access for the Disconnected:</strong> Provide complete digital continuity for patients without smartphones through signed physical QR cards and automated 2G Bangla SMS / USSD fallback.</li>
+        <li><strong>Syndicate & Middlemen Elimination:</strong> Dismantle hospital broker ("dalal") networks through cryptographically locked tokens, cellular geofencing, and public waiting-room queue displays.</li>
+      </ul>
+    </div>
+
+    <div class="running-footer">
+      <span>CareLoop: National Project Proposal · Document CL-BD-PROP-2026-V1.0</span>
+      <span>Confidential · For DGHS Evaluation Only</span>
+    </div>
+  </div>
+
+  <!-- ==================== PAGE 3: PROBLEM ANALYSIS ==================== -->
+  <div class="doc-page">
+    <div class="running-header">
+      <span>CareLoop: National Project Proposal</span>
+      <span class="tag">Page 3 · Problem Analysis</span>
+    </div>
+
+    <div class="content-area">
+      <h2><span class="sec-num">03</span> Problem Analysis: The Bangladesh Healthcare Trilemma</h2>
+      <p>
+        Every day, millions of Bangladeshi families navigate a fragmented medical journey where communication breaks down at each transfer point. Rigorous empirical research highlights severe structural bottlenecks:
+      </p>
+
+      <div class="metrics-grid">
+        <div class="metric-card">
+          <div class="metric-val">79.31%</div>
+          <div class="metric-label">Out-of-Pocket Share (World Bank)</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-val">59%</div>
+          <div class="metric-label">Tertiary Self-Referrals</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-val">32%</div>
+          <div class="metric-label">Unqualified Workforce</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-val">৳600 Cr</div>
+          <div class="metric-label">Counterfeit Drug Market</div>
+        </div>
+      </div>
+
+      <h3>The 7 Broken Loops of Bangladesh Healthcare</h3>
+      <table>
+        <thead>
+          <tr>
+            <th style="width: 20%;">Care Stage</th>
+            <th style="width: 42%;">Frontline Breakdown (Today's Reality)</th>
+            <th style="width: 38%;">Empirical Evidence & Sources</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>1. Financing & Payment</strong></td>
+            <td>Patients bear catastrophic financial burdens for routine illness; micro-insurance penetration is negligible (&lt;1%).</td>
+            <td><strong>79.31%</strong> of health expenditure is out-of-pocket (World Bank 2023; BNHA VI). Drives 5M citizens into poverty annually.</td>
+          </tr>
+          <tr>
+            <td><strong>2. Hospital Entry & Triage</strong></td>
+            <td>Chaotic queues; patients wait 3–4 hours for a paper ticket; doctor consultation averages under a minute.</td>
+            <td>Average consultation duration is <strong>48 seconds</strong> in government primary clinics (BMJ Global Health); DMCH logs 7,000+ OPD/day.</td>
+          </tr>
+          <tr>
+            <td><strong>3. Care Level Referral</strong></td>
+            <td>Patients bypass Upazila complexes and travel directly to tertiary medical colleges in Dhaka, causing extreme overcrowding.</td>
+            <td><strong>59% of tertiary inpatients self-refer</strong>; 58% of rural patients are unaware a tiered referral system exists (DGHS Survey).</td>
+          </tr>
+          <tr>
+            <td><strong>4. Clinical Prescription & AMR</strong></td>
+            <td>Handwritten, illegible prescriptions; rampant empiric prescribing of 3rd-generation cephalosporins; zero interaction checks.</td>
+            <td>~80% prescriptions illegible; only <strong>4.81%</strong> of doctors use digital systems; <strong>68%+</strong> acute viral visits receive Watch antibiotics.</td>
+          </tr>
+          <tr>
+            <td><strong>5. Medicine Dispensation</strong></td>
+            <td>Rural public pharmacy stock-outs; unregulated retail shops sell prescription drugs over-the-counter; counterfeit risks.</td>
+            <td>Only <strong>22%</strong> essential drug availability in primary facilities; unregulated medicine retail exceeds <strong>৳600 Crore/year</strong>.</td>
+          </tr>
+          <tr>
+            <td><strong>6. Diagnostics & Lab Reports</strong></td>
+            <td>Diagnostic tests are duplicated repeatedly because previous paper reports are lost, torn, or held by private clinics.</td>
+            <td>OpenELIS deployed in ~100 facilities lacks patient-facing reporting; patients incur <strong>30–40% redundant test spending</strong>.</td>
+          </tr>
+          <tr>
+            <td><strong>7. Institutional Trust & Integrity</strong></td>
+            <td>Middlemen ("dalals") intercept patients at gates, redirecting them to unauthorized clinics for illicit commissions.</td>
+            <td><strong>48.7%</strong> of public facility users report corruption/harassment (Transparency International Bangladesh); 5,000+ unregistered clinics.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="callout callout-amber">
+        <div class="callout-title">⚠️ The Critical Lessons from Past Pilot Failures</div>
+        Previous donor-funded e-health pilots failed because they were: (1) locked in proprietary, non-interoperable silos; (2) entirely dependent on permanent 4G connectivity, collapsing during load-shedding; (3) designed exclusively for high-end smartphones, ignoring the 74% of rural women without smartphones; and (4) ignored the human workflow of doctors handling 80 patients an hour. CareLoop directly solves all four failure points.
+      </div>
+    </div>
+
+    <div class="running-footer">
+      <span>CareLoop: National Project Proposal · Document CL-BD-PROP-2026-V1.0</span>
+      <span>Confidential · For DGHS Evaluation Only</span>
+    </div>
+  </div>
+
+  <!-- ==================== PAGE 4: STRATEGIC ALIGNMENT ==================== -->
+  <div class="doc-page">
+    <div class="running-header">
+      <span>CareLoop: National Project Proposal</span>
+      <span class="tag">Page 4 · Strategic Alignment</span>
+    </div>
+
+    <div class="content-area">
+      <h2><span class="sec-num">04</span> Strategic Alignment with National & Global Frameworks</h2>
+      <p>
+        CareLoop is not an isolated private software initiative; it is designed from the foundation up as sovereign digital public infrastructure conforming directly to national policies and international standards:
+      </p>
+
+      <h3>1. Alignment with Smart Bangladesh 2041</h3>
+      <p>
+        The Government of Bangladesh has established the <em>Smart Bangladesh 2041</em> master plan, resting upon four strategic pillars: Smart Citizen, Smart Government, Smart Economy, and Smart Society. CareLoop directly accelerates these pillars:
+      </p>
+      <ul>
+        <li><strong>Smart Citizen:</strong> Equips every citizen with a portable, lifelong digital health record accessible via physical smart card, mobile portal, or SMS.</li>
+        <li><strong>Smart Government:</strong> Provides DGHS and MoHFW with real-time epidemiological telemetry, bed availability status, and automated public resource auditing.</li>
+        <li><strong>Smart Economy:</strong> Drastically curtails out-of-pocket waste, automates claims processing for Shastho Shuroksha Karmasuchi (SSK), and integrates Ready-Made Garment (RMG) worker healthcare.</li>
+      </ul>
+
+      <div class="callout callout-navy">
+        <div class="callout-title">📍 Direct Target: The 6 Mandated DGHS Pilot Districts</div>
+        The Ministry has selected <strong>Bogura, Jhalokathi, Khulna, Narsingdi, Noakhali, and Sirajganj</strong> for initial e-Health card rollout. CareLoop is specifically configured with local geographic taxonomies, facility registries (DHIS2/FR), and staffing rosters for these 6 pilot districts to ensure immediate field readiness upon authorization.
+      </div>
+
+      <h3>2. Technical Standards Compliance Matrix</h3>
+      <table>
+        <thead>
+          <tr>
+            <th style="width: 28%;">Standard / Protocol</th>
+            <th style="width: 44%;">Application in CareLoop Architecture</th>
+            <th style="width: 28%;">Regulatory Beneficiary</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>HL7® FHIR® R4 (BD Core)</strong></td>
+            <td>All patient summaries, encounters, prescriptions, and lab results conform to the Bangladesh Core FHIR Profile.</td>
+            <td>DGHS NDHIE & Shared Electronic Health Record (SeHR)</td>
+          </tr>
+          <tr>
+            <td><strong>WHO AWaRe Classification</strong></td>
+            <td>Prescriptions are categorized dynamically into Access, Watch, and Reserve classes to prevent antimicrobial resistance.</td>
+            <td>WHO Bangladesh & DGHS CDC Directorate</td>
+          </tr>
+          <tr>
+            <td><strong>SNOMED CT & ICD-10/11</strong></td>
+            <td>Standardized clinical problem lists, clinical signs, and chief complaints enabling cross-facility interoperability.</td>
+            <td>National Health Data Standards Compliance</td>
+          </tr>
+          <tr>
+            <td><strong>LOINC® Code Standards</strong></td>
+            <td>Universal laboratory observation identifiers mapping hematology, biochemistry, and microbiology reports.</td>
+            <td>OpenELIS / DGHS Diagnostic Repository</td>
+          </tr>
+          <tr>
+            <td><strong>DGDA National Formulary</strong></td>
+            <td>Direct integration with Directorate General of Drug Administration registered generic molecules and brand dosages.</td>
+            <td>DGDA & Pharmacy Dispensation Safety</td>
+          </tr>
+          <tr>
+            <td><strong>BMDC Registry Verification</strong></td>
+            <td>Live verification of doctor credentials against the Bangladesh Medical & Dental Council licensing database.</td>
+            <td>BMDC Quack Prevention & Consumer Safety</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="running-footer">
+      <span>CareLoop: National Project Proposal · Document CL-BD-PROP-2026-V1.0</span>
+      <span>Confidential · For DGHS Evaluation Only</span>
+    </div>
+  </div>
+
+  <!-- ==================== PAGE 5: ARCHITECTURE DIAGRAM ==================== -->
+  <div class="doc-page">
+    <div class="running-header">
+      <span>CareLoop: National Project Proposal</span>
+      <span class="tag">Page 5 · Platform Architecture</span>
+    </div>
+
+    <div class="content-area">
+      <h2><span class="sec-num">05</span> Platform Architecture & The 5-Tier Clinical Spine</h2>
+      <p>
+        CareLoop operates as a unified platform presenting distinct, role-optimized interfaces across five functional tiers. Every module connects to a shared clinical spine powered by the National Health ID and BD Core FHIR R4:
+      </p>
+
+      <div class="arch-diagram">
+        <div class="arch-tier">
+          <div class="arch-tier-title">Tier 1: Access, Identity & Triage Layer</div>
+          <div class="arch-modules-grid">
+            <div class="arch-module-pill highlight">01 Appointment Booking</div>
+            <div class="arch-module-pill highlight">02 Token & Queue Engine</div>
+            <div class="arch-module-pill">03 Citizen Health Portal</div>
+            <div class="arch-module-pill">04 BMDC Doctor Registry</div>
+          </div>
+        </div>
+
+        <div class="arch-tier">
+          <div class="arch-tier-title">Tier 2: Clinical Workflow, Diagnostic & Radiology Engine</div>
+          <div class="arch-modules-grid">
+            <div class="arch-module-pill highlight">05 Integrated EMR/EHR</div>
+            <div class="arch-module-pill highlight">06 e-Prescription & AWaRe</div>
+            <div class="arch-module-pill highlight">07 Lab Diagnostics LIMS</div>
+            <div class="arch-module-pill">08 Radiology & PACS</div>
+          </div>
+          <div style="margin-top: 4px;">
+            <div class="arch-module-pill" style="display: inline-block; width: 49%;">09-RadioQ Centralized Radiotherapy Queue</div>
+            <div class="arch-module-pill" style="display: inline-block; width: 49%;">FHIR R4 BD-Core Interoperability Bus</div>
+          </div>
+        </div>
+
+        <div class="arch-tier">
+          <div class="arch-tier-title">Tier 3: Specialized Care, Maternal Health & Emergency</div>
+          <div class="arch-modules-grid">
+            <div class="arch-module-pill">09-Prodona Maternal Health</div>
+            <div class="arch-module-pill">10 Remote Telemedicine</div>
+            <div class="arch-module-pill">11 Emergency ICU & Blood</div>
+            <div class="arch-module-pill">12 DGDA Pharmacy POS</div>
+          </div>
+        </div>
+
+        <div class="arch-tier">
+          <div class="arch-tier-title">Tier 4: Systems Governance, Insurance & Analytics</div>
+          <div class="arch-modules-grid">
+            <div class="arch-module-pill">13 Micro-Insurance / SSK</div>
+            <div class="arch-module-pill">14 Epidemiological Analytics</div>
+            <div class="arch-module-pill">15 Hospital Asset Ops</div>
+            <div class="arch-module-pill">Audit & Provenance Vault</div>
+          </div>
+        </div>
+
+        <div class="arch-tier" style="margin-bottom: 0;">
+          <div class="arch-tier-title">Tier 5: Medical Training & Knowledge Layer</div>
+          <div class="arch-modules-grid" style="grid-template-columns: 1fr;">
+            <div class="arch-module-pill">16 MedEdu Campus & Clinical Logbook Management (Undergraduate & Residency Automation)</div>
+          </div>
+        </div>
+      </div>
+
+      <h3>Architectural Tenets & The Unified Spine</h3>
+      <ul>
+        <li><strong>Unified 9-Digit Health ID (HID):</strong> Serves as the single primary key across all five tiers, keyed to national civil registries (NID / BRN).</li>
+        <li><strong>Decoupled Micro-Frontends:</strong> Lightweight interfaces designed for specific hospital personas (Counter Clerk, Physician, Lab Tech, Patient) sharing a central API gateway.</li>
+        <li><strong>Event-Driven Broker:</strong> RabbitMQ / Apache Kafka bus streaming clinical events for epidemiological surveillance, bed tracking, and SMS gateways.</li>
+        <li><strong>Open Interoperability Adapter:</strong> Bidirectional RESTful adapters communicating natively with OpenMRS, OpenELIS, DHIS2, and legacy hospital software.</li>
+      </ul>
+    </div>
+
+    <div class="running-footer">
+      <span>CareLoop: National Project Proposal · Document CL-BD-PROP-2026-V1.0</span>
+      <span>Confidential · For DGHS Evaluation Only</span>
+    </div>
+  </div>
+
+  <!-- ==================== PAGE 6: 16-MODULE SPECIFICATIONS ==================== -->
+  <div class="doc-page">
+    <div class="running-header">
+      <span>CareLoop: National Project Proposal</span>
+      <span class="tag">Page 6 · Module Catalog</span>
+    </div>
+
+    <div class="content-area">
+      <h2><span class="sec-num">05B</span> Comprehensive 16-Module Functional Specifications</h2>
+      <p>
+        The platform architecture covers the complete patient journey through 16 modular components built to enterprise specifications:
+      </p>
+
+      <table>
+        <thead>
+          <tr>
+            <th style="width: 22%;">Module</th>
+            <th style="width: 48%;">Core Functionality & Interoperability</th>
+            <th style="width: 30%;">Frontline Impact</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>01 Appointment & 02 Token Queue</strong></td>
+            <td>Multi-channel booking (Web, App, Hotline, Physical Counter) with cellular geofencing and anti-broker serial protection.</td>
+            <td>Reduces rural OPD ticket wait time from 2 hours to 5 seconds.</td>
+          </tr>
+          <tr>
+            <td><strong>03 Portal & 04 Doctor Registry</strong></td>
+            <td>Lifelong citizen health record vault paired with live BMDC license verification against the public doctor registry.</td>
+            <td>Eliminates fake practitioners; guarantees patient data ownership.</td>
+          </tr>
+          <tr>
+            <td><strong>05 Core EMR & 06 e-Prescription</strong></td>
+            <td>3-click ultra-fast clinical charting with embedded WHO AWaRe antibiotic guidance, drug-drug interactions, and ICD-10 codification.</td>
+            <td>Enables high-volume consultations (48s to 90s) without sacrificing safety.</td>
+          </tr>
+          <tr>
+            <td><strong>07 Lab & 08 Radiology</strong></td>
+            <td>Bidirectional OpenELIS and DICOM web viewer; diagnostic results push automatically to the patient's record vault.</td>
+            <td>Stops redundant diagnostic testing; saves up to ৳3,000 per patient.</td>
+          </tr>
+          <tr>
+            <td><strong>09-RadioQ (Radiotherapy)</strong></td>
+            <td>National waitlist management and linear accelerator allocation for cancer patients across government radiotherapy centers.</td>
+            <td>Curtails deadly cancer therapy wait times from 4 months to 3 weeks.</td>
+          </tr>
+          <tr>
+            <td><strong>09-Prodona (Maternal)</strong></td>
+            <td>Protocol-driven Antenatal (ANC) and Postnatal (PNC) tracker for community clinics, identifying high-risk pregnancies automatically.</td>
+            <td>Directly reduces rural maternal and neonatal mortality in unions.</td>
+          </tr>
+          <tr>
+            <td><strong>11 Emergency & 12 Pharmacy</strong></td>
+            <td>Real-time verified ICU/CCU bed and donor blood availability; DGDA drug barcode verification preventing counterfeit dispensation.</td>
+            <td>Saves lives in trauma cases; eliminates toxic counterfeit medicines.</td>
+          </tr>
+          <tr>
+            <td><strong>13 Insurance & 14 Analytics</strong></td>
+            <td>Automated claims adjudication for Shastho Shuroksha Karmasuchi (SSK); real-time DGHS dashboard for dengue and AMR outbreaks.</td>
+            <td>Transparent public financing and rapid epidemiological response.</td>
+          </tr>
+          <tr>
+            <td><strong>16 MedEdu Campus</strong></td>
+            <td>Digital clinical logbook, objective assessments, and automated accreditation tracking for medical colleges and nursing institutes.</td>
+            <td>Modernizes medical education across 110+ medical colleges.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="callout callout-navy">
+        <div class="callout-title">📘 Complete Technical Documentation Availability</div>
+        Each of the 16 modules is fully specified in the project repository with four standardized engineering documents: <code>README.md</code> (Overview), <code>APP_FLOW.md</code> (State Machines), <code>FEATURES.md</code> (Functional Catalog), and <code>IMPLEMENTATION.md</code> (Database Schemas & APIs), comprising over 65 technical blueprints ready for immediate inspection.
+      </div>
+    </div>
+
+    <div class="running-footer">
+      <span>CareLoop: National Project Proposal · Document CL-BD-PROP-2026-V1.0</span>
+      <span>Confidential · For DGHS Evaluation Only</span>
+    </div>
+  </div>
+
+  <!-- ==================== PAGE 7: TECHNICAL INNOVATIONS ==================== -->
+  <div class="doc-page">
+    <div class="running-header">
+      <span>CareLoop: National Project Proposal</span>
+      <span class="tag">Page 7 · Breakthrough Innovations</span>
+    </div>
+
+    <div class="content-area">
+      <h2><span class="sec-num">06</span> Breakthrough Technical Innovations for Bangladesh Realities</h2>
+      <p>
+        CareLoop was engineered specifically to triumph over the harsh field conditions of rural Bangladesh that routinely cause traditional foreign health software to fail:
+      </p>
+
+      <div class="callout">
+        <div class="callout-title">⚡ 1. Resilient Offline-First PWA Architecture (CRDT State Synchronization)</div>
+        <p>
+          Rural Upazila Health Complexes routinely experience 6 to 8 hours of daily electrical load-shedding and sudden fiber outages. CareLoop's web frontends operate as Progressive Web Apps (PWAs) utilizing <strong>IndexedDB local storage</strong>. OPD ticket counters are assigned partitioned token blocks (e.g., Counter 1 owns 1–500; Counter 2 owns 501–1000). When internet connectivity severs, registration, queue ticketing, and clinical prescriptions continue uninterrupted. Upon reconnection, Conflict-free Replicated Data Types (CRDTs) and <strong>UUIDv7 sequential timestamps</strong> merge records with zero data collisions.
+        </p>
+      </div>
+
+      <div class="callout callout-navy">
+        <div class="callout-title">🪪 2. Ed25519 Cryptographically Signed Physical QR Card Identity</div>
+        <p>
+          To prevent dependence on live internet for identity verification, the physical paper or PVC e-Health Card issued to the citizen contains an <strong>Ed25519 cryptographically signed compact QR code</strong>. The QR payload encodes the patient's 9-digit Health ID, emergency blood group, severe allergies, and chronic conditions signed by the DGHS Master Key. Any Community Clinic worker or paramedic can scan the card with an offline mobile camera, immediately verifying authenticity without sending a single network packet.
+        </p>
+      </div>
+
+      <div class="callout callout-amber">
+        <div class="callout-title">🦠 3. Real-Time WHO AWaRe Antibiotic Stewardship Decision Support</div>
+        <p>
+          Antimicrobial Resistance (AMR) threatens to render common infections untreatable in South Asia. CareLoop incorporates a zero-latency clinical decision rule engine based on the <strong>WHO AWaRe classification</strong> (Access, Watch, Reserve). If a physician enters a Watch-category antibiotic (e.g., Cefixime or Ceftriaxone) for acute viral bronchitis or uncomplicated watery diarrhea, CareLoop instantly displays a visual guidance banner recommending first-line Access-category alternatives (e.g., Amoxicillin). The system does not lock the doctor's authority, but requires a 1-click clinical override reason, establishing transparent clinical governance.
+        </p>
+      </div>
+
+      <div class="callout">
+        <div class="callout-title">🛡️ 4. Anti-Broker ("Anti-Dalal") Queue & Geofence Protection</div>
+        <p>
+          In major government hospitals, corrupt brokers hoard morning OPD tickets and sell them to illiterate rural patients for ৳200–৳500. CareLoop eliminates this exploit through three coordinated barriers: (1) cryptographic binding to verified NID/HID; (2) 50-meter GPS/cellular geofencing on mobile check-in; and (3) real-time waiting-room LCD screens displaying current queue tokens.
+        </p>
+      </div>
+
+      <div class="callout callout-navy">
+        <div class="callout-title">📱 5. Universal 2G Bangla SMS & USSD (*16263#) Inclusion Bridge</div>
+        <p>
+          Recognizing that 74% of rural women do not own smartphones, CareLoop guarantees that no patient is excluded. When laboratory results, emergency referrals, or prescription summaries are generated, the system automatically dispatches a secure, plain-text Bangla SMS (e.g., <em>"আপনার রক্তের সিবিসি রিপোর্ট তৈরি হয়েছে। রিপোর্ট দেখতে পিন নম্বর ৮৪৯২ ব্যবহার করুন।"</em>). Basic phone users can check queue serials or confirm appointments via USSD (<strong>*16263#</strong>).
+        </p>
+      </div>
+    </div>
+
+    <div class="running-footer">
+      <span>CareLoop: National Project Proposal · Document CL-BD-PROP-2026-V1.0</span>
+      <span>Confidential · For DGHS Evaluation Only</span>
+    </div>
+  </div>
+
+  <!-- ==================== PAGE 8: LIVE POC BLUEPRINT ==================== -->
+  <div class="doc-page">
+    <div class="running-header">
+      <span>CareLoop: National Project Proposal</span>
+      <span class="tag">Page 8 · Live Hackathon POC</span>
+    </div>
+
+    <div class="content-area">
+      <h2><span class="sec-num">07</span> The 3-Minute Live Hackathon Proof-of-Concept (POC) Blueprint</h2>
+      <p>
+        At the MoHFW & WHO E-Health Innovation Hackathon, CareLoop does not rely on static presentation slides. Instead, our team executes a live, unbroken, end-to-end clinical workflow connected directly to the official <strong>DGHS FHIR Sandbox</strong> (<code>https://sandbox.fhir.dghs.gov.bd/fhir</code>):
+      </p>
+
+      <div class="flow-steps">
+        <div class="flow-step-box">
+          <div class="flow-step-header">Step 1: Check-in (0:30)</div>
+          <div class="flow-step-body">
+            Scan physical e-Health Card QR $\rightarrow$ Instant FHIR <code>Patient</code> lookup $\rightarrow$ Issue Token #14 in 5 seconds.
+          </div>
+        </div>
+        <div class="flow-step-box">
+          <div class="flow-step-header">Step 2: Chamber (1:15)</div>
+          <div class="flow-step-body">
+            Doctor calls Token #14 $\rightarrow$ Cefixime triggers WHO AWaRe alert $\rightarrow$ De-escalates to Amoxicillin + CBC test.
+          </div>
+        </div>
+        <div class="flow-step-box">
+          <div class="flow-step-header">Step 3: Lab & SMS (2:00)</div>
+          <div class="flow-step-body">
+            Lab enters CBC results $\rightarrow$ Updates FHIR <code>DiagnosticReport</code> $\rightarrow$ 2G feature phone receives Bangla SMS.
+          </div>
+        </div>
+        <div class="flow-step-box">
+          <div class="flow-step-header">Step 4: The Ask (2:45)</div>
+          <div class="flow-step-body">
+            Demonstrate 16-module architectural coverage $\rightarrow$ Request immediate sandbox pilot in 6 designated districts.
+          </div>
+        </div>
+      </div>
+
+      <h3>Detailed Technical Transaction Breakdown</h3>
+      <table>
+        <thead>
+          <tr>
+            <th style="width: 15%;">Stage</th>
+            <th style="width: 25%;">User Action / Interface</th>
+            <th style="width: 35%;">FHIR R4 Resource Transaction</th>
+            <th style="width: 25%;">Live Verification Metric</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>01. OPD Check-In</strong></td>
+            <td>Counter clerk scans laminated QR card presented by patient (Rokeya Begum).</td>
+            <td>
+              <code>GET /Patient?identifier=UHID-7729103</code><br/>
+              <code>POST /Encounter (status: in-progress, class: AMB)</code>
+            </td>
+            <td>Response time <strong>&lt; 180ms</strong>; printed thermal ticket issued with Token #14.</td>
+          </tr>
+          <tr>
+            <td><strong>02. Doctor Chamber</strong></td>
+            <td>Medical Officer clicks Token #14; reviews past history; prescribes acute medication.</td>
+            <td>
+              <code>POST /Condition (code: J20.9 Acute Bronchitis)</code><br/>
+              <code>POST /MedicationRequest (Amoxicillin 500mg)</code>
+            </td>
+            <td>WHO AWaRe amber alert triggers on screen; clinical override audited in FHIR payload.</td>
+          </tr>
+          <tr>
+            <td><strong>03. Diagnostic Order</strong></td>
+            <td>Doctor adds Complete Blood Count (CBC) investigation order.</td>
+            <td>
+              <code>POST /ServiceRequest (code: LOINC 58410-2 CBC Panel)</code>
+            </td>
+            <td>Instantly routes to hospital laboratory worklist without paper requisition.</td>
+          </tr>
+          <tr>
+            <td><strong>04. Laboratory Sync</strong></td>
+            <td>Lab technician inputs Hemoglobin (9.8 g/dL) and Total Count values.</td>
+            <td>
+              <code>POST /DiagnosticReport (status: final, result: Observation/Hb)</code>
+            </td>
+            <td>Results permanently committed to citizen's Shared Electronic Health Record (SeHR).</td>
+          </tr>
+          <tr>
+            <td><strong>05. Universal Notification</strong></td>
+            <td>Automated notification engine fires event webhook.</td>
+            <td>
+              <code>POST /Communication (payload: Bangla SMS notification)</code>
+            </td>
+            <td>Podium feature phone buzzes live in judges' presence within <strong>4 seconds</strong>.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="callout callout-navy">
+        <div class="callout-title">🎯 Why This Live Demo Wins the Hackathon</div>
+        Judges routinely see polished UI prototypes that fail when network cables are unplugged or real databases are queried. Our demo proves three decisive capabilities: (1) real HL7 FHIR standards compliance running against the DGHS sandbox; (2) solving the real-world crisis of antimicrobial stewardship; and (3) closing the digital divide by notifying an offline, button-phone user live on stage.
+      </div>
+    </div>
+
+    <div class="running-footer">
+      <span>CareLoop: National Project Proposal · Document CL-BD-PROP-2026-V1.0</span>
+      <span>Confidential · For DGHS Evaluation Only</span>
+    </div>
+  </div>
+
+  <!-- ==================== PAGE 9: SECURITY & DATA PRIVACY ==================== -->
+  <div class="doc-page">
+    <div class="running-header">
+      <span>CareLoop: National Project Proposal</span>
+      <span class="tag">Page 9 · Security & Data Governance</span>
+    </div>
+
+    <div class="content-area">
+      <h2><span class="sec-num">08</span> Security, Privacy & National Data Governance</h2>
+      <p>
+        Health data represents the most sensitive category of citizen information. CareLoop is architected in rigorous alignment with the <strong>Bangladesh Cyber Security Act 2023</strong> and the <strong>DGHS Health Data Governance Framework</strong>:
+      </p>
+
+      <table>
+        <thead>
+          <tr>
+            <th style="width: 25%;">Security Layer</th>
+            <th style="width: 45%;">Implementation Protocol</th>
+            <th style="width: 30%;">Regulatory Compliance</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Data at Rest Encryption</strong></td>
+            <td>All database volumes, PostgreSQL tables, and S3 document vaults encrypted with <strong>AES-256</strong>.</td>
+            <td>National Cyber Security Policy 2023</td>
+          </tr>
+          <tr>
+            <td><strong>Data in Transit Encryption</strong></td>
+            <td>Mandatory <strong>TLS 1.3</strong> transport encryption across all mobile, desktop, and API endpoints; HSTS enforced.</td>
+            <td>BTRC & DGHS API Security Standards</td>
+          </tr>
+          <tr>
+            <td><strong>Patient Consent Architecture</strong></td>
+            <td>Doctors cannot view longitudinal patient history without explicit citizen authorization via OTP or physical card QR scan.</td>
+            <td>DGHS Shared Health Record (SeHR) Consent Mandate</td>
+          </tr>
+          <tr>
+            <td><strong>Role-Based Access Control</strong></td>
+            <td>Strict principle of least privilege; clerks see queue tokens only; pharmacists see active prescriptions; doctors see medical history.</td>
+            <td>ISO/IEC 27001 & ISO 27799 (Health Informatics)</td>
+          </tr>
+          <tr>
+            <td><strong>Immutable Audit Trail</strong></td>
+            <td>Every record access, modification, or export is cryptographically signed and logged as a FHIR <code>AuditEvent</code> resource.</td>
+            <td>Section 34, Bangladesh Cyber Security Act</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>Disaster Recovery & High-Availability Architecture</h3>
+      <p>
+        To support 24/7 national healthcare operations without catastrophic outages, CareLoop implements carrier-grade infrastructure resilience:
+      </p>
+      <ul>
+        <li><strong>Data Sovereignty:</strong> Primary databases hosted exclusively within the sovereign territory of Bangladesh at the Tier-III National Data Center (BCC Kaliakoir).</li>
+        <li><strong>Recovery Targets:</strong> Recovery Point Objective (RPO) &lt; 5 minutes; Recovery Time Objective (RTO) &lt; 15 minutes.</li>
+        <li><strong>Family Privacy Mode:</strong> In shared-phone households, sensitive records (reproductive health, psychiatry) require an independent secondary PIN.</li>
+      </ul>
+
+      <div class="callout callout-amber">
+        <div class="callout-title">🔒 Patient Rights & The SeHR Consent Gateway</div>
+        Citizens maintain unconditional ownership of their health information. Through the Citizen Health Portal (Module 03) or SMS authorization, patients can grant, restrict, or revoke access to any historical medical record at any time.
+      </div>
+    </div>
+
+    <div class="running-footer">
+      <span>CareLoop: National Project Proposal · Document CL-BD-PROP-2026-V1.0</span>
+      <span>Confidential · For DGHS Evaluation Only</span>
+    </div>
+  </div>
+
+  <!-- ==================== PAGE 10: IMPLEMENTATION ROADMAP ==================== -->
+  <div class="doc-page">
+    <div class="running-header">
+      <span>CareLoop: National Project Proposal</span>
+      <span class="tag">Page 10 · Implementation Roadmap</span>
+    </div>
+
+    <div class="content-area">
+      <h2><span class="sec-num">09</span> Phased Implementation & 24-Month National Rollout</h2>
+      <p>
+        CareLoop executes an agile, phased rollout strategy designed to validate clinical efficacy across primary facilities before nationwide scaling:
+      </p>
+
+      <table>
+        <thead>
+          <tr>
+            <th style="width: 16%;">Phase</th>
+            <th style="width: 22%;">Target Period</th>
+            <th style="width: 38%;">Key Milestones & Deliverables</th>
+            <th style="width: 24%;">Geographic Scope</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Phase 1: Proof & Sandbox</strong></td>
+            <td><strong>Months 1 – 3</strong><br/>(Dec 2026 – Feb 2027)</td>
+            <td>
+              • Hackathon POC live validation.<br/>
+              • Official certification on DGHS FHIR Sandbox.<br/>
+              • Integration with BMDC doctor database and DGDA drug registry.
+            </td>
+            <td>National E-Health Hackathon & DGHS Test Labs (Dhaka)</td>
+          </tr>
+          <tr>
+            <td><strong>Phase 2: 6-District Pilot</strong></td>
+            <td><strong>Months 4 – 9</strong><br/>(Mar 2027 – Aug 2027)</td>
+            <td>
+              • Deployment across 12 UHCs and 36 Community Clinics.<br/>
+              • Issuance of 250,000 active e-Health Cards with signed QR.<br/>
+              • Activation of WHO AWaRe antibiotic decision support.
+            </td>
+            <td><strong>6 Mandated Pilot Districts:</strong><br/>Bogura, Jhalokathi, Khulna, Narsingdi, Noakhali, Sirajganj</td>
+          </tr>
+          <tr>
+            <td><strong>Phase 3: Divisional Scale</strong></td>
+            <td><strong>Months 10 – 18</strong><br/>(Sep 2027 – May 2028)</td>
+            <td>
+              • Expansion to 16 District Hospitals and 8 Tertiary Medical Colleges.<br/>
+              • National closed-loop referral system activation.<br/>
+              • Integration with national health helpline (Shastho Batayon 16263).
+            </td>
+            <td>8 Administrative Divisions (Dhaka, Ctg, Rajshahi, Khulna, Barishal, Sylhet, Rangpur, Mymensingh)</td>
+          </tr>
+          <tr>
+            <td><strong>Phase 4: Sovereign Scale</strong></td>
+            <td><strong>Months 19 – 24</strong><br/>(Jun 2028 – Nov 2028)</td>
+            <td>
+              • Nationwide scale across all 495 Upazilas and 14,000 Community Clinics.<br/>
+              • Private diagnostic center and retail pharmacy interoperability.<br/>
+              • Automated claims adjudication for SSK micro-insurance.
+            </td>
+            <td>Nationwide (All 64 Districts of Bangladesh)</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>Change Management & Frontline Training Protocols</h3>
+      <ul>
+        <li><strong>Physician Peer Coaching:</strong> Hands-on training showing doctors how CareLoop reduces daily consultation charting time by over 50%.</li>
+        <li><strong>Community Clinic Assistant (CHCP) Workshops:</strong> Mobile-first offline maternal health screening and referral training.</li>
+        <li><strong>On-Site Digital Health Facilitators:</strong> Stationed at OPD counters during the first 30 days of hospital rollout to assist elderly and illiterate patients.</li>
+      </ul>
+    </div>
+
+    <div class="running-footer">
+      <span>CareLoop: National Project Proposal · Document CL-BD-PROP-2026-V1.0</span>
+      <span>Confidential · For DGHS Evaluation Only</span>
+    </div>
+  </div>
+
+  <!-- ==================== PAGE 11: FINANCIALS & BUDGET ==================== -->
+  <div class="doc-page">
+    <div class="running-header">
+      <span>CareLoop: National Project Proposal</span>
+      <span class="tag">Page 11 · Financial Viability & Budget</span>
+    </div>
+
+    <div class="content-area">
+      <h2><span class="sec-num">10</span> Financial Viability, Budget Estimates & Commercial Sustainability</h2>
+      <p>
+        Digital public health infrastructure must not collapse when initial grant cycles expire. CareLoop incorporates a self-sustaining financial model based on public-private partnership (PPP) revenue streams while guaranteeing that <strong>care remains 100% free for citizens and public facilities</strong>:
+      </p>
+
+      <h3>1. Tripartite Sustainable Revenue Channels</h3>
+      <table>
+        <thead>
+          <tr>
+            <th style="width: 28%;">Revenue Channel</th>
+            <th style="width: 42%;">Target Customer & Commercial Mechanism</th>
+            <th style="width: 30%;">Financial Sustainability Role</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Private Diagnostic SaaS & API</strong></td>
+            <td>Private diagnostic centers pay <strong>৳10–৳15</strong> per digitally delivered lab report to the patient's record vault.</td>
+            <td>Eliminates physical film and report printing costs for clinics; generates predictable operational income.</td>
+          </tr>
+          <tr>
+            <td><strong>RMG Garment Worker Subscription</strong></td>
+            <td>Garment export factories subscribe at <strong>৳30–৳35 per worker/month</strong> to manage factory clinics and ESG audits.</td>
+            <td>Captures high-volume corporate health revenue (4M+ garment workers in Bangladesh).</td>
+          </tr>
+          <tr>
+            <td><strong>MedEdu Academic Licensing</strong></td>
+            <td>Private medical colleges and nursing institutes license Module 16 for student logbooks and accreditation portfolios.</td>
+            <td>Generates recurring institutional software licensing revenue.</td>
+          </tr>
+          <tr>
+            <td><strong>Public Facilities & Citizens</strong></td>
+            <td>All rural Upazila Health Complexes, Community Clinics, government doctors, and citizens access the platform with <strong>zero fees</strong>.</td>
+            <td>Guarantees uncompromised equity and universal national adoption.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>2. 24-Month Pilot & Scaling Budget Breakdown</h3>
+      <table>
+        <thead>
+          <tr>
+            <th style="width: 35%;">Expenditure Category</th>
+            <th style="width: 45%;">Key Inclusions & Allocation Scope</th>
+            <th style="width: 20%; text-align: right;">Estimated Cost (BDT)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Software Engineering & FHIR Core</strong></td>
+            <td>Full-stack engineers, FHIR interoperability architects, mobile PWA developers, security auditing, and continuous testing.</td>
+            <td style="text-align: right;">৳ 3,20,00,000</td>
+          </tr>
+          <tr>
+            <td><strong>Hardware & Facility Enablement</strong></td>
+            <td>Thermal token printers, barcode/QR scanners, waiting-room display monitors, and backup power equipment for 12 UHCs.</td>
+            <td style="text-align: right;">৳ 1,80,00,000</td>
+          </tr>
+          <tr>
+            <td><strong>Cloud Infrastructure & Sovereignty</strong></td>
+            <td>Tier-III National Data Center hosting, database clustering, SMS gateway delivery fees, and automated disaster recovery.</td>
+            <td style="text-align: right;">৳ 95,00,000</td>
+          </tr>
+          <tr>
+            <td><strong>Field Training & Change Facilitators</strong></td>
+            <td>On-site digital health facilitators stationed across 6 pilot districts, doctor training workshops, and printed patient manuals.</td>
+            <td style="text-align: right;">৳ 1,45,00,000</td>
+          </tr>
+          <tr>
+            <td><strong>Independent Security & Clinical Audit</strong></td>
+            <td>External third-party penetration testing, ethical hacking, clinical safety certification, and WHO compliance auditing.</td>
+            <td style="text-align: right;">৳ 60,00,000</td>
+          </tr>
+          <tr>
+            <td><strong>Project Management & Governance</strong></td>
+            <td>Inter-agency coordination, monitoring & evaluation (M&E) reporting, legal compliance, and field travel.</td>
+            <td style="text-align: right;">৳ 75,00,000</td>
+          </tr>
+          <tr style="font-weight: bold; background: #e2e8f0;">
+            <td colspan="2">TOTAL ESTIMATED 24-MONTH INVESTMENT</td>
+            <td style="text-align: right; color: #0f2942;">৳ 8,75,00,000 (~$730K USD)</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="callout callout-navy">
+        <div class="callout-title">💰 National Macro-Economic Return on Investment (ROI)</div>
+        By eliminating redundant diagnostic investigations (estimated at ৳2,200 crore wasted annually) and curtailing irrational 3rd-generation cephalosporin antibiotic prescriptions (saving ৳1,800 crore annually), the national economy recovers over <strong>৳4,000 Crore annually</strong>—generating an extraordinary return exceeding 400x on public investment.
+      </div>
+    </div>
+
+    <div class="running-footer">
+      <span>CareLoop: National Project Proposal · Document CL-BD-PROP-2026-V1.0</span>
+      <span>Confidential · For DGHS Evaluation Only</span>
+    </div>
+  </div>
+
+  <!-- ==================== PAGE 12: RISK MANAGEMENT ==================== -->
+  <div class="doc-page">
+    <div class="running-header">
+      <span>CareLoop: National Project Proposal</span>
+      <span class="tag">Page 12 · Risk Management</span>
+    </div>
+
+    <div class="content-area">
+      <h2><span class="sec-num">11</span> Risk Management & Mitigation Matrix</h2>
+      <p>
+        National digital health deployments encounter complex structural challenges. CareLoop applies proactive, institutionalized mitigation protocols across all identified threat domains:
+      </p>
+
+      <table>
+        <thead>
+          <tr>
+            <th style="width: 18%;">Risk Domain</th>
+            <th style="width: 25%;">Identified Risk Scenario</th>
+            <th style="width: 12%; text-align: center;">Risk Level</th>
+            <th style="width: 45%;">Institutionalized Mitigation Strategy</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Infrastructure</strong></td>
+            <td>Prolonged rural electrical blackouts and severe broadband outages.</td>
+            <td style="text-align: center; color: #b91c1c; font-weight: bold;">HIGH</td>
+            <td>IndexedDB offline-first architecture; partitioned local token blocks; local SQLite caching; automatic synchronization upon link restoration.</td>
+          </tr>
+          <tr>
+            <td><strong>Clinical Adoption</strong></td>
+            <td>Physicians resist typing during high-volume OPD clinics (80+ patients/day).</td>
+            <td style="text-align: center; color: #b91c1c; font-weight: bold;">HIGH</td>
+            <td>Voice-to-text Bangla transcription; 3-click rapid prescription templates; zero compulsory typing for common clinical presentations.</td>
+          </tr>
+          <tr>
+            <td><strong>Interoperability</strong></td>
+            <td>Legacy hospital information systems (OpenMRS, OpenELIS) reject synchronization.</td>
+            <td style="text-align: center; color: #d97706; font-weight: bold;">MEDIUM</td>
+            <td>Standardized HL7 FHIR R4 adaptation microservices; open RESTful webhooks; backward compatibility with legacy CSV and database batch drops.</td>
+          </tr>
+          <tr>
+            <td><strong>Broker Resistance</strong></td>
+            <td>Hospital broker ("dalal") syndicates attempt to tamper with check-in kiosks or intimidate patients.</td>
+            <td style="text-align: center; color: #b91c1c; font-weight: bold;">HIGH</td>
+            <td>Cryptographic token locking bound to verified NID/HID; 50-meter cellular geofencing; public waiting-room LCD monitors displaying real-time queue serials.</td>
+          </tr>
+          <tr>
+            <td><strong>Cyber Security</strong></td>
+            <td>Targeted ransomware or unauthorized data exfiltration attempts against central servers.</td>
+            <td style="text-align: center; color: #b91c1c; font-weight: bold;">HIGH</td>
+            <td>Full AES-256 database encryption; strict TLS 1.3 in transit; zero-trust network segmentation; continuous vulnerability management; National Data Center sovereignty.</td>
+          </tr>
+          <tr>
+            <td><strong>Registry Latency</strong></td>
+            <td>BMDC doctor licensing or DGDA drug formulary verification endpoints experience downtime.</td>
+            <td style="text-align: center; color: #d97706; font-weight: bold;">MEDIUM</td>
+            <td>Off-peak nightly encrypted registry caching; 3-tiered visual trust badges (🟢 Live Verified, 🟡 Cached Verified, ⚪ Pending Verification).</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="callout callout-amber">
+        <div class="callout-title">⚠️ Special Protocol: Addressing Patient Literacy Barriers</div>
+        Illiterate patients are disproportionately vulnerable to exploitation. CareLoop incorporates color-coded visual tokens (e.g., Red for Emergency, Green for Routine OPD, Blue for Antenatal Care) and automated Bangla voice announcements over waiting-room speakers (e.g., <em>"টোকেন নম্বর ১৪, ডাক্তার সাহেবের ৩ নম্বর কক্ষে আসুন"</em>), ensuring no citizen is excluded due to inability to read.
+      </div>
+    </div>
+
+    <div class="running-footer">
+      <span>CareLoop: National Project Proposal · Document CL-BD-PROP-2026-V1.0</span>
+      <span>Confidential · For DGHS Evaluation Only</span>
+    </div>
+  </div>
+
+  <!-- ==================== PAGE 13: KPIS, GOVERNANCE & CONCLUSION ==================== -->
+  <div class="doc-page">
+    <div class="running-header">
+      <span>CareLoop: National Project Proposal</span>
+      <span class="tag">Page 13 · Monitoring & Conclusion</span>
+    </div>
+
+    <div class="content-area">
+      <h2><span class="sec-num">12</span> Monitoring, Key Performance Indicators & Conclusion</h2>
+      <p>
+        The ultimate success of CareLoop will be evaluated using rigorous, quantitative performance metrics monitored in real time across the 6 pilot districts:
+      </p>
+
+      <table>
+        <thead>
+          <tr>
+            <th style="width: 25%;">Evaluation Metric</th>
+            <th style="width: 25%;">Baseline Status (Pre-CareLoop)</th>
+            <th style="width: 25%;">Pilot Target (Month 6)</th>
+            <th style="width: 25%;">National Target (Month 24)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>OPD Ticket Wait Time</strong></td>
+            <td>45 to 120 minutes</td>
+            <td><strong>&lt; 2 minutes</strong></td>
+            <td><strong>&lt; 30 seconds</strong></td>
+          </tr>
+          <tr>
+            <td><strong>Digital e-Prescription Rate</strong></td>
+            <td>4.81% of consultations</td>
+            <td><strong>&gt; 75%</strong> in pilot facilities</td>
+            <td><strong>&gt; 95%</strong> across all UHCs</td>
+          </tr>
+          <tr>
+            <td><strong>Inappropriate Antibiotic Rx</strong></td>
+            <td>68.4% of acute viral visits</td>
+            <td><strong>&lt; 35%</strong> (WHO AWaRe compliant)</td>
+            <td><strong>&lt; 18%</strong> nationwide</td>
+          </tr>
+          <tr>
+            <td><strong>Redundant Diagnostic Tests</strong></td>
+            <td>35% duplication rate</td>
+            <td><strong>&lt; 10%</strong> (via shared vault)</td>
+            <td><strong>&lt; 3%</strong> across network</td>
+          </tr>
+          <tr>
+            <td><strong>Patient Identity Match Rate</strong></td>
+            <td>&lt; 20% consistent record</td>
+            <td><strong>&gt; 90%</strong> via Health ID QR</td>
+            <td><strong>&gt; 99.5%</strong> universal matching</td>
+          </tr>
+          <tr>
+            <td><strong>System Offline Availability</strong></td>
+            <td>Frequent complete crashes</td>
+            <td><strong>99.9% uptime</strong> (PWA offline)</td>
+            <td><strong>99.99%</strong> continuous uptime</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>Project Governance & Advisory Committee</h3>
+      <p>
+        To guarantee sovereign control and institutional alignment, CareLoop will operate under the direction of an inter-ministerial Project Steering Committee (PSC) chaired by the Additional Secretary (Public Health), MoHFW, with Member-Secretary Director (MIS) DGHS, and representatives from a2i, BMDC, DGDA, and WHO Bangladesh.
+      </p>
+
+      <div class="callout callout-navy">
+        <div class="callout-title">📢 The Call to Action & Conclusion</div>
+        <p>
+          Bangladesh stands at an extraordinary historical crossroads. The infrastructure mandate for the National Health ID and the physical e-Health Card already exists; what has been missing is the <strong>frontline clinical software engine</strong> that makes the card functional inside a crowded Upazila hospital.
+        </p>
+        <p style="margin-bottom: 0;">
+          CareLoop bridges this chasm. It is compliant with national standards, built for the realities of power cuts and shared phones, and immediately testable on the DGHS FHIR Sandbox. We respectfully submit this proposal for formal endorsement, sandbox pilot authorization in the six designated districts, and partnership to realize a truly <strong>Smart Healthcare Ecosystem for Bangladesh by 2041</strong>.
+        </p>
+      </div>
+
+      <div style="margin-top: 10px; border-top: 1px solid #cbd5e1; padding-top: 8px; display: flex; justify-content: space-between; font-size: 7.5pt;">
+        <div>
+          <strong>CareLoop Systems Architecture Team</strong><br/>
+          E-Health Innovation Consortium, Dhaka · Email: <code>contact@careloop-bd.org</code>
+        </div>
+        <div style="text-align: right;">
+          <strong>Document Status:</strong> Official Proposal Submission<br/>
+          <strong>Version:</strong> 1.0.0 (November 2026) · Aligned with DGHS Digital Health Strategy 2023–2028
+        </div>
+      </div>
+    </div>
+
+    <div class="running-footer">
+      <span>CareLoop: National Project Proposal · Document CL-BD-PROP-2026-V1.0</span>
+      <span>Confidential · For DGHS Evaluation Only</span>
+    </div>
+  </div>
+
+</body>
+</html>
+`;
+
+const htmlFilePath = path.join(__dirname, '..', 'docs', 'CareLoop_National_Digital_Health_Project_Proposal.html');
+const pdfFilePath = path.join(__dirname, '..', 'docs', 'CareLoop_National_Digital_Health_Project_Proposal.pdf');
+
+fs.writeFileSync(htmlFilePath, htmlContent, 'utf8');
+console.log("HTML file successfully generated at:", htmlFilePath);
+
+console.log("Compiling PDF via Headless Edge...");
+const edgeExe = "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe";
+
+try {
+  const cmd = `"${edgeExe}" --headless=new --disable-gpu --no-pdf-header-footer --print-to-pdf="${pdfFilePath}" "${htmlFilePath}"`;
+  execSync(cmd, { stdio: 'inherit' });
+  console.log("PDF compilation command completed.");
+  
+  if (fs.existsSync(pdfFilePath)) {
+    const stats = fs.statSync(pdfFilePath);
+    console.log(`SUCCESS: PDF created at ${pdfFilePath} (Size: ${(stats.size / 1024).toFixed(1)} KB)`);
+  } else {
+    console.error("ERROR: PDF file was not created.");
+  }
+} catch (err) {
+  console.error("Compilation error:", err.message);
+}
