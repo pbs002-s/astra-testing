@@ -1,7 +1,7 @@
 # 🇧🇩 Integrated Digital Healthcare Platform for Bangladesh (BD-HealthLoop)
 ## Complete Module Architecture & Specifications
 
-Welcome to the comprehensive technical documentation for the **16 Core Healthcare Modules** designed specifically to solve Bangladesh's critical healthcare challenges.
+Welcome to the comprehensive technical documentation for the **17 Core Healthcare Modules** designed specifically to solve Bangladesh's critical healthcare challenges.
 
 ---
 
@@ -41,12 +41,13 @@ flowchart TD
         M13["[13. DrugVerify](./13-drug-verify/README.md)<br/>Anti-Counterfeit 2D DataMatrix Scan"]
         M14["[14. FeedbackLoop](./14-feedback-loop/README.md)<br/>Patient Experience & Mera Aspataal Feedback"]
         M15["[15. InternLog](./15-intern-log/README.md)<br/>MBBS Internship Competency e-Logbook"]
+        M16["[16. MedEdu](./16-med-edu/README.md)<br/>Medical Education & Campus Layer (EduSync)"]
     end
 
     M07 ==> M05
     M05 --> M01 & M02 & M03 & M12
     M05 --> M04 & M06 & M08 & M09P & M09R
-    M05 --> M10 & M11 & M13 & M14 & M15
+    M05 --> M10 & M11 & M13 & M14 & M15 & M16
 
     style SPINE fill:#d4edda,stroke:#28a745,stroke-width:3px
     style CLINICAL fill:#eef6ff,stroke:#3b82f6,stroke-width:2px
@@ -76,6 +77,7 @@ flowchart TD
 | **13** | [`13-drug-verify`](./13-drug-verify/) | Tk 600 crore counterfeit medicine circulating in Bangladesh market | Consumer & pharmacist 2D DataMatrix batch verification against DGDA database; fake medicine report | `Medication`, `VerificationResult` | Full Docs |
 | **14** | [`14-feedback-loop`](./14-feedback-loop/) | Patient dissatisfaction and hospital violence (>80% staff saw/experienced violence); no feedback channel | Mera Aspataal model; outbound SMS feedback; facility rating & grievance escalation | `QuestionnaireResponse`, `Communication` | Full Docs |
 | **15** | [`15-intern-log`](./15-intern-log/) | 66%+ interns assessed only by signature; no practical procedure tracking; 43% faculty vacancies | BMDC competency e-logbook; supervisor OTP/QR verification; BMEAC accreditation evidence | `PractitionerRole`, `Task` | Full Docs |
+| **16** | [`16-med-edu`](./16-med-edu/) | Medical colleges run on WhatsApp + notice boards; 43% teaching posts vacant; zero item-quality feedback on assessments; no campus data for BMEAC | EduSync-derived campus layer: courses, assignments, timed auto-graded quizzes, study groups, lectures, duty rosters, audit-chain evidence | `Practitioner`, `Organization`, `Encounter`, `Task` | Full Docs |
 
 ---
 
@@ -99,3 +101,4 @@ Explore the detailed specifications inside each module folder:
 14. [**13-drug-verify/**](./13-drug-verify/) — [README.md](./13-drug-verify/README.md) • [APP_FLOW.md](./13-drug-verify/APP_FLOW.md) • [FEATURES.md](./13-drug-verify/FEATURES.md) • [IMPLEMENTATION.md](./13-drug-verify/IMPLEMENTATION.md)
 15. [**14-feedback-loop/**](./14-feedback-loop/) — [README.md](./14-feedback-loop/README.md) • [APP_FLOW.md](./14-feedback-loop/APP_FLOW.md) • [FEATURES.md](./14-feedback-loop/FEATURES.md) • [IMPLEMENTATION.md](./14-feedback-loop/IMPLEMENTATION.md)
 16. [**15-intern-log/**](./15-intern-log/) — [README.md](./15-intern-log/README.md) • [APP_FLOW.md](./15-intern-log/APP_FLOW.md) • [FEATURES.md](./15-intern-log/FEATURES.md) • [IMPLEMENTATION.md](./15-intern-log/IMPLEMENTATION.md)
+17. [**16-med-edu/**](./16-med-edu/) — [README.md](./16-med-edu/README.md) • [APP_FLOW.md](./16-med-edu/APP_FLOW.md) • [FEATURES.md](./16-med-edu/FEATURES.md) • [IMPLEMENTATION.md](./16-med-edu/IMPLEMENTATION.md)
